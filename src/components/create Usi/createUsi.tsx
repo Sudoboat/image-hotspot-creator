@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import './createUsi.css'
 import 'react-image-crop/dist/ReactCrop.css'
 import usiImage from '../../assets/usi-image/ikeausi.avif'
+import crop from '../../assets/crop-image/crop.png'
 import ColorPicker from 'react-pick-color'
 import cloneDeep from 'clone-deep'
 import {
@@ -65,6 +66,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
   ])
 
   const [nextDraw, setNextDraw] = useState(true)
+  const [canDraw, setCanDraw] = useState(false)
   const [showColorPalate, setShowColorPalate] = useState(false)
   const [draftRect, setDraftRect] = useState<any>({
     x: 0,
@@ -80,6 +82,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
     const image = imageRef.current
+    console.log(imageRef, 'image--->')
 
     image.onload = () => {
       const parent = canvas.parentElement
@@ -92,58 +95,63 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
   }, [])
 
   const handleMouseDown = (event: any) => {
-    if (!nextDraw) return
-    const { offsetX, offsetY } = event.nativeEvent
-    setDraftRect({
-      x: offsetX,
-      y: offsetY,
-      width: 0,
-      height: 0,
-      name: '',
-      borderColor: `#FF0000`,
-      hotspotX: 0,
-      hotspotY: 0,
-    })
-    isDrawing.current = true
-    setShowDetail(false)
-    let tempRectArr = cloneDeep(rectArray)
-    tempRectArr.push({
-      x: offsetX,
-      y: offsetY,
-      width: 0,
-      height: 0,
-      name: '',
-      borderColor: `#FF0000`,
-    })
-    setRectArray(tempRectArr)
+    if (canDraw) {
+      if (!nextDraw) return
+      const { offsetX, offsetY } = event.nativeEvent
+      setDraftRect({
+        x: offsetX,
+        y: offsetY,
+        width: 0,
+        height: 0,
+        name: '',
+        borderColor: `#FF0000`,
+        hotspotX: 0,
+        hotspotY: 0,
+      })
+      isDrawing.current = true
+      setShowDetail(false)
+      let tempRectArr = cloneDeep(rectArray)
+      tempRectArr.push({
+        x: offsetX,
+        y: offsetY,
+        width: 0,
+        height: 0,
+        name: '',
+        borderColor: `#FF0000`,
+      })
+      setRectArray(tempRectArr)
+    }
   }
 
   const handleMouseMove = (event: any) => {
-    if (!isDrawing.current) return
+    if (canDraw) {
+      if (!isDrawing.current) return
 
-    const { offsetX, offsetY } = event.nativeEvent
-    let temporaryBoundingBox = cloneDeep(draftRect)
-    const width = offsetX - temporaryBoundingBox.x
-    const height = offsetY - temporaryBoundingBox.y
-    temporaryBoundingBox.width = width
-    temporaryBoundingBox.height = height
-    temporaryBoundingBox.hotspotX =
-      temporaryBoundingBox.x + temporaryBoundingBox.width / 2
-    temporaryBoundingBox.hotspotY =
-      temporaryBoundingBox.y + temporaryBoundingBox.height / 2
-    let tempRectArr = cloneDeep(rectArray)
-    if (tempRectArr.length == 0) {
-      tempRectArr.push(temporaryBoundingBox)
-      setRectArray(tempRectArr)
-    } else {
-      tempRectArr[tempRectArr.length - 1] = temporaryBoundingBox
-      setRectArray(tempRectArr)
+      const { offsetX, offsetY } = event.nativeEvent
+      let temporaryBoundingBox = cloneDeep(draftRect)
+      const width = offsetX - temporaryBoundingBox.x
+      const height = offsetY - temporaryBoundingBox.y
+      temporaryBoundingBox.width = width
+      temporaryBoundingBox.height = height
+      temporaryBoundingBox.hotspotX =
+        temporaryBoundingBox.x + temporaryBoundingBox.width / 2
+      temporaryBoundingBox.hotspotY =
+        temporaryBoundingBox.y + temporaryBoundingBox.height / 2
+      let tempRectArr = cloneDeep(rectArray)
+      if (tempRectArr.length == 0) {
+        tempRectArr.push(temporaryBoundingBox)
+        setRectArray(tempRectArr)
+      } else {
+        tempRectArr[tempRectArr.length - 1] = temporaryBoundingBox
+        setRectArray(tempRectArr)
+      }
+      setRect(temporaryBoundingBox)
+      // drawRectangle()
     }
-    setRect(temporaryBoundingBox)
-    // drawRectangle()
   }
 
   const handleMouseUp = () => {
+    if (!canDraw) return
     setShowDetail(true)
     isDrawing.current = false
     let temprectArr = cloneDeep(rectArray)
@@ -152,40 +160,41 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
       temprectArr.push(currentRect)
     }
     setNextDraw(false)
+    setCanDraw(false)
   }
 
-  const drawRectangle = () => {
-    const canvas = canvasRef.current
-    const context = canvas.getContext('2d')
+  // const drawRectangle = () => {
+  //   const canvas = canvasRef.current
+  //   const context = canvas.getContext('2d')
 
-    context.clearRect(0, 0, canvas.width, canvas.height)
-    context.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height)
-    if (rectArray.length > 0) {
-      rectArray.forEach((rect) => {
-        context.strokeStyle = rect.borderColor
-        context.lineWidth = 1.5
-        context.strokeRect(rect.x, rect.y, rect.width, rect.height)
-        context.beginPath()
-        context.arc(rect.hotspotX, rect.hotspotY, 10, 0, 2 * Math.PI)
-        context.fillStyle = 'grey'
-        context.fill()
+  //   context.clearRect(0, 0, canvas.width, canvas.height)
+  //   context.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height)
+  //   if (rectArray.length > 0) {
+  //     rectArray.forEach((rect) => {
+  //       context.strokeStyle = rect.borderColor
+  //       context.lineWidth = 1.5
+  //       context.strokeRect(rect.x, rect.y, rect.width, rect.height)
+  //       context.beginPath()
+  //       context.arc(rect.hotspotX, rect.hotspotY, 10, 0, 2 * Math.PI)
+  //       context.fillStyle = 'grey'
+  //       context.fill()
 
-        context.beginPath()
-        context.arc(rect.hotspotX, rect.hotspotY, 5, 0, 2 * Math.PI)
-        context.fillStyle = 'white'
-        context.fill()
-      })
-    }
-    let temporaryBoundingBox = cloneDeep(rect)
-    context.strokeStyle = temporaryBoundingBox.borderColor
-    context.lineWidth = 2
-    context.strokeRect(
-      temporaryBoundingBox.x,
-      temporaryBoundingBox.y,
-      temporaryBoundingBox.width,
-      temporaryBoundingBox.height
-    )
-  }
+  //       context.beginPath()
+  //       context.arc(rect.hotspotX, rect.hotspotY, 5, 0, 2 * Math.PI)
+  //       context.fillStyle = 'white'
+  //       context.fill()
+  //     })
+  //   }
+  //   let temporaryBoundingBox = cloneDeep(rect)
+  //   context.strokeStyle = temporaryBoundingBox.borderColor
+  //   context.lineWidth = 2
+  //   context.strokeRect(
+  //     temporaryBoundingBox.x,
+  //     temporaryBoundingBox.y,
+  //     temporaryBoundingBox.width,
+  //     temporaryBoundingBox.height
+  //   )
+  // }
 
   const drawCommonRectangle = (tempArray: any) => {
     // console.log(tempArray, 'changing')
@@ -227,6 +236,20 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
     setListArray(rectArray)
     setShowDetail(false)
     setNextDraw(true)
+  }
+
+  const drawCanvasImage = (canvasDetail, id) => {
+    console.log(canvasDetail, document.getElementById(id), 'draw')
+    const canvas = document.getElementById(id)
+    const context = canvas.getContext('2d')
+    const image = imageRef.current
+    const parent = canvas.parentElement
+    console.log(canvas.parentElement, 'parent')
+    const { width, height } = parent.getBoundingClientRect()
+    canvas.width = width
+    canvas.height = height
+    console.table(rect)
+    context.drawImage(image, 180, 180, 100, 100, 0, 0, 200, 200)
   }
 
   const cancelBoundingBox = () => {
@@ -272,9 +295,26 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
     setRectArray(tempArray)
   }, [rect])
 
+  const deleteBoundingBox = (index: any) => {
+    let tempArr = cloneDeep(rectArray)
+    tempArr.splice(index, 1)
+    setRectArray(tempArr)
+    setListArray(tempArr)
+  }
   return (
     <div className="createContainer">
       <div className="imageSection">
+        <div style={{ marginBottom: '10px' }}>
+          <Stack>
+            <Button
+              isActive={canDraw}
+              onClick={() => setCanDraw(!canDraw)}
+              className="cropButton"
+            >
+              <img width={'25px'} src={crop} alt="" />
+            </Button>
+          </Stack>
+        </div>
         <div id="imageContainer" className="imageContainer">
           <div style={{ position: 'relative', width: '100%', height: '100%' }}>
             <canvas
@@ -289,7 +329,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
               ref={imageRef}
               src={usiImage}
               alt=""
-              style={{ width: '100%', height: '50%', display: 'none' }}
+              style={{ width: '100%', display: 'none' }}
             />
           </div>
         </div>
@@ -344,15 +384,6 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
                   </div>
                   <div className="boundingBox">
                     <div>Border Color:</div>
-                    {/* <input
-                      type="text"
-                      value={rect.borderColor}
-                      onChange={(e) =>
-                        changeRectDetail(e.target.value, 'borderColor')
-                      }
-                      onClick={() => setShowColorPalate(true)}
-                    /> */}
-
                     <Menu
                       isOpen={showColorPalate}
                       onClose={() => setShowColorPalate(false)}
@@ -451,25 +482,40 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
               // console.log(elem, 'elem')
               return (
                 <div key={index} className="boundingBoxList">
-                  <div style={{ width: '60px', height: '60px' }}>
+                  <div className="listDetail">
+                    <div style={{ width: '50px', color: 'black' }}>
+                      {index + 1}
+                    </div>
                     <div
                       style={{
-                        width: '100%',
-                        height: '100%',
-                        backgroundImage: `url(${usiImage})`,
-                        backgroundPosition: `${rect.x}px ${rect.y}px`,
+                        width: '30px',
+                        height: '30px',
+                        background: rect.borderColor,
+                        border: '1px solid gray',
                       }}
                     ></div>
+                    <div
+                      style={{
+                        width: '250px',
+                        color: 'black',
+                        fontFamily: 'sans-serif',
+                      }}
+                    >
+                      {rect?.name ? rect?.name : 'bounding box'}
+                    </div>
                   </div>
-                  <div>{rect?.name ? rect?.name : 'bounding box'}</div>
-                  <div
-                    style={{
-                      width: '30px',
-                      height: '30px',
-                      background: rect.borderColor,
-                      border: '1px solid gray',
-                    }}
-                  ></div>
+
+                  <div>
+                    <Stack>
+                      <Button
+                        onClick={() => deleteBoundingBox(index)}
+                        variant="negative"
+                        size="small"
+                      >
+                        Delete
+                      </Button>
+                    </Stack>
+                  </div>
                 </div>
               )
             })
