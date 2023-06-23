@@ -9,14 +9,14 @@ const Usi = ({ sdk }) => {
 
   return (
     <div className="mainContainer">
-      {false ? (
+      {!imageStatus ? (
         <SelectImage
           setImageUrl={setImageUrl}
           setImageStatus={setImageStatus}
           imageUrl={imageUrl}
         />
       ) : (
-        <CreateUsi setImageUrl={setImageUrl} imageUrl={imageUrl} />
+        <CreateUsi setImageUrl={setImageUrl} imageUrl={imageUrl} sdk={sdk} />
       )}
     </div>
   )
