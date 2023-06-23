@@ -15,7 +15,7 @@ import {
 } from '@contentful/f36-components'
 import { element } from 'prop-types'
 
-const CreateUsi = ({ setImageUrl, imageUrl }) => {
+const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
   interface boundingBoxDetail {
     top: number
     left: number
@@ -68,6 +68,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
   const [nextDraw, setNextDraw] = useState(true)
   const [canDraw, setCanDraw] = useState(false)
   const [showColorPalate, setShowColorPalate] = useState(false)
+  const [selectedBoundingBoxIndex, setSelectedBoundingBoxIndex] = useState(null)
   const [draftRect, setDraftRect] = useState<any>({
     x: 0,
     y: 0,
@@ -79,10 +80,11 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
     hotspotY: 0,
   })
   useEffect(() => {
+    console.log(sdk, 'sdk')
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
     const image = imageRef.current
-    console.log(imageRef, 'image--->')
+    // console.log(imageRef, 'image--->')
 
     image.onload = () => {
       const parent = canvas.parentElement
@@ -152,6 +154,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
 
   const handleMouseUp = () => {
     if (!canDraw) return
+    console.log('handle mouse up calling')
     setShowDetail(true)
     isDrawing.current = false
     let temprectArr = cloneDeep(rectArray)
@@ -160,7 +163,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
       temprectArr.push(currentRect)
     }
     setNextDraw(false)
-    setCanDraw(false)
+    // setCanDraw(false)
   }
 
   // const drawRectangle = () => {
@@ -236,6 +239,8 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
     setListArray(rectArray)
     setShowDetail(false)
     setNextDraw(true)
+    setSelectedBoundingBoxIndex(null)
+    sdk.entry.fields.hotspots.setValue({ image: imageUrl, hotspots: rectArray })
   }
 
   const drawCanvasImage = (canvasDetail, id) => {
@@ -252,6 +257,19 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
     context.drawImage(image, 180, 180, 100, 100, 0, 0, 200, 200)
   }
 
+  const deleteBoundingBox = (index: any, e: any) => {
+    e.stopPropagation()
+    // console.log(showDetail, 'sssshow')
+    let tempArr = cloneDeep(rectArray)
+    console.log('delete calling', tempArr)
+    tempArr.splice(index, 1)
+    console.log(tempArr, 'after delete')
+    setSelectedBoundingBoxIndex(null)
+    setRectArray(tempArr)
+    setListArray(tempArr)
+    sdk.entry.fields.hotspots.setValue({ image: imageUrl, hotspots: tempArr })
+  }
+
   const cancelBoundingBox = () => {
     let tempArr = cloneDeep(rectArray)
     tempArr.pop()
@@ -260,6 +278,8 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
     setRectArray(tempArr)
     setShowDetail(false)
     setNextDraw(true)
+    setSelectedBoundingBoxIndex(null)
+    sdk.entry.fields.hotspots.setValue({ image: imageUrl, hotspots: tempArr })
   }
   useEffect(() => {
     // drawCommonRectangle(rectArray)
@@ -268,39 +288,74 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
     context.clearRect(0, 0, canvas.width, canvas.height)
     context.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height)
     // let temporaryBoundingBox = cloneDeep(rect)
-    rectArray.forEach((element: any) => {
-      context.strokeStyle = element.borderColor
-      context.lineWidth = 1.5
-      context.strokeRect(element.x, element.y, element.width, element.height)
-      if (element.white != 0 && element.height != 0) {
-        context.beginPath()
-        context.arc(element.hotspotX, element.hotspotY, 10, 0, 2 * Math.PI)
-        context.fillStyle = 'grey'
-        context.fill()
+    if (rectArray.length > 0) {
+      rectArray.forEach((element: any) => {
+        context.strokeStyle = element.borderColor
+        context.lineWidth = 1.5
+        context.strokeRect(element.x, element.y, element.width, element.height)
+        if (element.white != 0 && element.height != 0) {
+          context.beginPath()
+          context.arc(element.hotspotX, element.hotspotY, 10, 0, 2 * Math.PI)
+          context.fillStyle = 'grey'
+          context.fill()
 
-        context.beginPath()
-        context.arc(element.hotspotX, element.hotspotY, 5, 0, 2 * Math.PI)
-        context.fillStyle = 'white'
-        context.fill()
-      }
-    })
+          context.beginPath()
+          context.arc(element.hotspotX, element.hotspotY, 5, 0, 2 * Math.PI)
+          context.fillStyle = 'white'
+          context.fill()
+        }
+      })
+    }
   }, [rectArray])
   useEffect(() => {
+    console.log('rect worko')
     let tempArray = cloneDeep(rectArray)
-    tempArray[tempArray.length - 1] = rect
+    let index = cloneDeep(selectedBoundingBoxIndex)
+    console.log(index, 'ind')
+    if (index != null && index > -1) {
+      console.log('selected', rect, index)
+      tempArray[index] = rect
 
-    console.log(tempArray, 'tempArray')
-    console.log('temprect', rect, tempArray.length)
-    // drawCommonRectangle(tempArray)
-    setRectArray(tempArray)
+      console.log(tempArray, 'selected tempArray')
+      console.log('selected temprect', rect, tempArray.length)
+      // drawCommonRectangle(tempArray)
+      setRectArray(tempArray)
+    } else {
+      console.log('unselected')
+      tempArray[tempArray.length - 1] = rect
+
+      console.log(tempArray, 'tempArray')
+      console.log('temprect', rect, tempArray.length)
+      // drawCommonRectangle(tempArray)
+      setRectArray(tempArray)
+    }
   }, [rect])
 
-  const deleteBoundingBox = (index: any) => {
-    let tempArr = cloneDeep(rectArray)
-    tempArr.splice(index, 1)
-    setRectArray(tempArr)
-    setListArray(tempArr)
-  }
+  useEffect(() => {
+    // console.log(index)
+    if (selectedBoundingBoxIndex != null) {
+      let tempArr = cloneDeep(rectArray)
+      let selectedRect = tempArr[selectedBoundingBoxIndex]
+      setRect(selectedRect)
+      setShowDetail(true)
+      console.log(selectedBoundingBoxIndex, 'selc ind')
+    }
+  }, [selectedBoundingBoxIndex])
+
+  useEffect(() => {
+    console.log(showDetail, 'show')
+  }, [showDetail])
+  // const editBoundingBox = (index: any) => {
+  //   console.log(index)
+  //   let tempArr = cloneDeep(rectArray)
+  //   let selectedRect = tempArr[index]
+  //   setRect(selectedRect)
+  //   setShowDetail(true)
+  // }
+
+  useEffect(() => {
+    console.log(imageUrl, 'image url')
+  }, [imageUrl])
   return (
     <div className="createContainer">
       <div className="imageSection">
@@ -327,7 +382,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
             />
             <img
               ref={imageRef}
-              src={usiImage}
+              src={imageUrl}
               alt=""
               style={{ width: '100%', display: 'none' }}
             />
@@ -342,7 +397,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
                     <div> Box Top:</div>
                     <input
                       type="number"
-                      value={rect.y}
+                      value={rect?.y}
                       onChange={(e) => changeRectDetail(e.target.value, 'y')}
                     />
                   </div>
@@ -350,7 +405,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
                     <div> Box Left:</div>
                     <input
                       type="number"
-                      value={rect.x}
+                      value={rect?.x}
                       onChange={(e) => changeRectDetail(e.target.value, 'x')}
                     />
                   </div>
@@ -358,7 +413,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
                     <div> Box Height:</div>
                     <input
                       type="number"
-                      value={rect.height}
+                      value={rect?.height}
                       onChange={(e) =>
                         changeRectDetail(e.target.value, 'height')
                       }
@@ -368,7 +423,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
                     <div>Box Width:</div>
                     <input
                       type="number"
-                      value={rect.width}
+                      value={rect?.width}
                       onChange={(e) =>
                         changeRectDetail(e.target.value, 'width')
                       }
@@ -378,7 +433,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
                     <div> Box Name:</div>
                     <input
                       type="text"
-                      value={rect.name}
+                      value={rect?.name}
                       onChange={(e) => changeRectDetail(e.target.value, 'name')}
                     />
                   </div>
@@ -391,7 +446,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
                       <Menu.Trigger>
                         <div
                           style={{
-                            background: `${rect.borderColor}`,
+                            background: `${rect?.borderColor}`,
                             width: '20px',
                             height: '20px',
                             border: '1px solid gray',
@@ -434,7 +489,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
                     <div>Hotspot Top:</div>
                     <input
                       type="number"
-                      value={rect.hotspotY}
+                      value={rect?.hotspotY}
                       onChange={(e) =>
                         changeRectDetail(e.target.value, 'hotspotY')
                       }
@@ -444,7 +499,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
                     <div> Hotspot Left:</div>
                     <input
                       type="number"
-                      value={rect.hotspotX}
+                      value={rect?.hotspotX}
                       onChange={(e) =>
                         changeRectDetail(e.target.value, 'hotspotX')
                       }
@@ -455,7 +510,7 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
                       <Button
                         variant="primary"
                         size="small"
-                        isDisabled={rect.name ? false : true}
+                        isDisabled={rect?.name ? false : true}
                         onClick={() => saveBoundingBox()}
                       >
                         save
@@ -481,7 +536,12 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
               // let elem = drawCanvasImage(rect, `myCanvas-${index}`)
               // console.log(elem, 'elem')
               return (
-                <div key={index} className="boundingBoxList">
+                <div
+                  key={index}
+                  className="boundingBoxList"
+                  onClick={() => setSelectedBoundingBoxIndex(index)}
+                  role="none"
+                >
                   <div className="listDetail">
                     <div style={{ width: '50px', color: 'black' }}>
                       {index + 1}
@@ -504,11 +564,10 @@ const CreateUsi = ({ setImageUrl, imageUrl }) => {
                       {rect?.name ? rect?.name : 'bounding box'}
                     </div>
                   </div>
-
                   <div>
                     <Stack>
                       <Button
-                        onClick={() => deleteBoundingBox(index)}
+                        onClick={(e) => deleteBoundingBox(index, e)}
                         variant="negative"
                         size="small"
                       >
