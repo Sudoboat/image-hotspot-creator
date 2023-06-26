@@ -113,7 +113,7 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
       isDrawing.current = true
       setShowDetail(false)
       let tempRectArr = cloneDeep(rectArray)
-      tempRectArr.push({
+      tempRectArr.unshift({
         x: offsetX,
         y: offsetY,
         width: 0,
@@ -121,6 +121,7 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
         name: '',
         borderColor: `#FF0000`,
       })
+      console.log(tempRectArr, 'ttttt')
       setRectArray(tempRectArr)
     }
   }
@@ -144,7 +145,8 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
         tempRectArr.push(temporaryBoundingBox)
         setRectArray(tempRectArr)
       } else {
-        tempRectArr[tempRectArr.length - 1] = temporaryBoundingBox
+        // tempRectArr[tempRectArr.length - 1] = temphttps://app.contentful.com/spaces/ov64r3ga08sj/entries/7rEhFd5aeOMGJ7x2KC5Ih5oraryBoundingBox
+        tempRectArr[0] = temporaryBoundingBox
         setRectArray(tempRectArr)
       }
       setRect(temporaryBoundingBox)
@@ -158,46 +160,10 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
     setShowDetail(true)
     isDrawing.current = false
     let temprectArr = cloneDeep(rectArray)
-    if (temprectArr.length == 1) {
-      let currentRect = cloneDeep(rect)
-      temprectArr.push(currentRect)
-    }
+
     setNextDraw(false)
     // setCanDraw(false)
   }
-
-  // const drawRectangle = () => {
-  //   const canvas = canvasRef.current
-  //   const context = canvas.getContext('2d')
-
-  //   context.clearRect(0, 0, canvas.width, canvas.height)
-  //   context.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height)
-  //   if (rectArray.length > 0) {
-  //     rectArray.forEach((rect) => {
-  //       context.strokeStyle = rect.borderColor
-  //       context.lineWidth = 1.5
-  //       context.strokeRect(rect.x, rect.y, rect.width, rect.height)
-  //       context.beginPath()
-  //       context.arc(rect.hotspotX, rect.hotspotY, 10, 0, 2 * Math.PI)
-  //       context.fillStyle = 'grey'
-  //       context.fill()
-
-  //       context.beginPath()
-  //       context.arc(rect.hotspotX, rect.hotspotY, 5, 0, 2 * Math.PI)
-  //       context.fillStyle = 'white'
-  //       context.fill()
-  //     })
-  //   }
-  //   let temporaryBoundingBox = cloneDeep(rect)
-  //   context.strokeStyle = temporaryBoundingBox.borderColor
-  //   context.lineWidth = 2
-  //   context.strokeRect(
-  //     temporaryBoundingBox.x,
-  //     temporaryBoundingBox.y,
-  //     temporaryBoundingBox.width,
-  //     temporaryBoundingBox.height
-  //   )
-  // }
 
   const drawCommonRectangle = (tempArray: any) => {
     // console.log(tempArray, 'changing')
@@ -243,20 +209,6 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
     sdk.entry.fields.hotspots.setValue({ image: imageUrl, hotspots: rectArray })
   }
 
-  const drawCanvasImage = (canvasDetail, id) => {
-    console.log(canvasDetail, document.getElementById(id), 'draw')
-    const canvas = document.getElementById(id)
-    const context = canvas.getContext('2d')
-    const image = imageRef.current
-    const parent = canvas.parentElement
-    console.log(canvas.parentElement, 'parent')
-    const { width, height } = parent.getBoundingClientRect()
-    canvas.width = width
-    canvas.height = height
-    console.table(rect)
-    context.drawImage(image, 180, 180, 100, 100, 0, 0, 200, 200)
-  }
-
   const deleteBoundingBox = (index: any, e: any) => {
     e.stopPropagation()
     // console.log(showDetail, 'sssshow')
@@ -272,7 +224,7 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
 
   const cancelBoundingBox = () => {
     let tempArr = cloneDeep(rectArray)
-    tempArr.pop()
+    tempArr.shift()
     // console.log(tempArr, 'temp')
     drawCommonRectangle(tempArr)
     setRectArray(tempArr)
@@ -282,6 +234,7 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
     sdk.entry.fields.hotspots.setValue({ image: imageUrl, hotspots: tempArr })
   }
   useEffect(() => {
+    console.log(rectArray, 'arrr')
     // drawCommonRectangle(rectArray)
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
@@ -307,6 +260,7 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
       })
     }
   }, [rectArray])
+
   useEffect(() => {
     console.log('rect worko')
     let tempArray = cloneDeep(rectArray)
@@ -322,7 +276,8 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
       setRectArray(tempArray)
     } else {
       console.log('unselected')
-      tempArray[tempArray.length - 1] = rect
+      if (!rect.width) return
+      tempArray[0] = rect
 
       console.log(tempArray, 'tempArray')
       console.log('temprect', rect, tempArray.length)
@@ -342,20 +297,6 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
     }
   }, [selectedBoundingBoxIndex])
 
-  useEffect(() => {
-    console.log(showDetail, 'show')
-  }, [showDetail])
-  // const editBoundingBox = (index: any) => {
-  //   console.log(index)
-  //   let tempArr = cloneDeep(rectArray)
-  //   let selectedRect = tempArr[index]
-  //   setRect(selectedRect)
-  //   setShowDetail(true)
-  // }
-
-  useEffect(() => {
-    console.log(imageUrl, 'image url')
-  }, [imageUrl])
   return (
     <div className="createContainer">
       <div className="imageSection">
