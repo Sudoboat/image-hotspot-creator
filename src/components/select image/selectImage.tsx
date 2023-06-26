@@ -121,13 +121,6 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }) => {
         asset.publish()
       })
       .catch(console.error)
-    // setSelectedIMG(data.fields.file['en-US'].url)
-    // setUploadImgData({
-    //   ...uploadImgData,
-    //   imgUrl: data.fields.file['en-US'].url,
-    //   imgId: data?.sys?.id,
-    //   imgName: data?.fields?.file['en-US'].fileName,
-    // })
   }
 
   useEffect(() => {
@@ -141,14 +134,14 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }) => {
     >
       {imageAssets ? (
         <>
-          <div
+          {/* <div
             className="arrowContainer"
             aria-disabled={imageFile ? false : true}
             role="none"
             onClick={() => goToCreateUsi()}
           >
             <ArrowForwardIcon size="large" />
-          </div>
+          </div> */}
           <div className="uploadSection">
             <MagicDropzone
               className="Dropzone"
@@ -186,7 +179,7 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }) => {
           </div>
           <div className="selectSection">
             <div className="selectParentContainer">
-              <div style={{ color: '#5b5a5a' }}>select Image :</div>
+              <div style={{ color: '#5b5a5a' }}>Existing Images :</div>
               <Select
                 name="optionSelect"
                 id="optionSelect"
@@ -194,7 +187,7 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }) => {
                 onChange={(e) => getImageUrl(e.target.value, true)}
               >
                 <Select.Option value="" isDisabled>
-                  select existing image...
+                  select image...
                 </Select.Option>
                 {(imageAssets || []).map((element: any) => {
                   return (
@@ -204,6 +197,23 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }) => {
                   )
                 })}
               </Select>
+            </div>
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <Stack>
+                <Button
+                  variant="primary"
+                  isDisabled={url.url ? false : true}
+                  onClick={() => goToCreateUsi()}
+                >
+                  Proceed
+                </Button>
+              </Stack>
             </div>
           </div>
         </>
