@@ -5,7 +5,7 @@ import 'react-image-crop/dist/ReactCrop.css'
 import CloseIcon from '@mui/icons-material/Close'
 import EditIcon from '@mui/icons-material/Edit'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
+import CropIcon from '@mui/icons-material/Crop'
 import sample from '../../assets/usi-image/sample.jpg'
 import usiImage from '../../assets/usi-image/ikeausi.avif'
 import crop from '../../assets/crop-image/crop.png'
@@ -19,9 +19,9 @@ import {
   Menu,
 } from '@contentful/f36-components'
 import { element } from 'prop-types'
-import { Box } from '@mui/material'
+import { Alert, Box, Snackbar, Tooltip } from '@mui/material'
 
-const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
+const CreateUsi = ({ setImageUrl, imageUrl, sdk, setImageStatus }: any) => {
   interface boundingBoxDetail {
     top: number
     left: number
@@ -185,6 +185,7 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
   const drawCommonRectangle = (tempArray: any) => {
     // console.log(tempArray, 'changing')
     const canvas = canvasRef.current
+    // canvas.height = canvas.width * 1.5
     const context = canvas.getContext('2d')
     context.clearRect(0, 0, canvas.width, canvas.height)
     context.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height)
@@ -260,6 +261,7 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
     setRectArray(tempArr)
     setShowDetail(false)
     setNextDraw(true)
+    setCanDraw(false)
     setSelectedBoundingBoxIndex(null)
     sdk.entry.fields.hotspots.setValue({ image: imageUrl, hotspots: tempArr })
   }
@@ -327,16 +329,33 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
     }
   }, [selectedBoundingBoxIndex])
 
+  const [open, setOpen] = React.useState(false)
+
+  const handleClick = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
   return (
     <div className="createContainer">
       <div className="back_button">
-        <KeyboardBackspaceIcon />
+        <div
+          onClick={() => {
+            setImageStatus(false)
+          }}
+          role="none"
+        >
+          <KeyboardBackspaceIcon />
+        </div>
       </div>
       <div className="hotspotlist_container">
         <div className="hotspotlist_title">Existing Hotspots</div>
 
         {listArray.length > 0
-          ? listArray.map((rect, index) => {
+          ? listArray.map((rect: any, index: any) => {
               // let elem = drawCanvasImage(rect, `myCanvas-${index}`)
               // console.log(elem, 'elem')
               return (
@@ -348,7 +367,11 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
                   >
                     <CloseIcon color="error" />
                   </div>
-                  <div className="hotspot_title_container">
+                  <div
+                    className="hotspot_title_container"
+                    onClick={() => setSelectedBoundingBoxIndex(index)}
+                    role="none"
+                  >
                     <div
                       className="hotspot_image_logo"
                       style={{
@@ -366,21 +389,36 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
       </div>
       <div className="image_container">
         <div className="image_title_container">
-          <div className="image_title">vijayaragavan sudoboat.jpg</div>
+          <div className="image_title">Image Editor</div>
           <div className="add_hotspot_button">
-            Create hotspot
             <div
               className="add_icon"
               style={
                 !canDraw ? { opacity: 1 } : { opacity: 0.5, cursor: 'auto' }
               }
-              onClick={() => setCanDraw(!canDraw)}
+              onClick={() => {
+                handleClick()
+                setCanDraw(!canDraw)
+              }}
               role="none"
             >
-              <AddPhotoAlternateIcon color="primary" />
+              <Tooltip title="Select Area">
+                <CropIcon color="primary" />
+              </Tooltip>
             </div>
           </div>
         </div>
+
+        <Snackbar
+          open={canDraw}
+          autoHideDuration={1000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert severity="info" sx={{ width: '100%' }}>
+            Draw a Rectangle over the Image to Create Hotspots!
+          </Alert>
+        </Snackbar>
         {/* <div className="editable_image_container">
           <div className="editable_image">
             <img
@@ -391,62 +429,28 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
           </div>
         </div> */}
         <div id="imageContainer" className="imageContainer">
-          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-            <canvas
-              ref={canvasRef}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              style={{ position: 'absolute', top: 0, left: 0 }}
-              id="usiCanvas"
-            />
-            <img
-              ref={imageRef}
-              src={imageUrl}
-              alt=""
-              style={{ width: '100%', display: 'none' }}
-            />
-          </div>
+          <canvas
+            ref={canvasRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            style={{ position: 'absolute', top: 0, left: 0 }}
+            id="usiCanvas"
+          />
+          <img
+            ref={imageRef}
+            src={imageUrl}
+            alt=""
+            style={{ width: '100%', display: 'none' }}
+          />
         </div>
       </div>
       <div className="hotspot_details_container">
-        {showDetail && (
+        {showDetail ? (
           <>
             <div className="boundingBoxDetailContainer">
               <div className="boundingBox">
-                <div> Box Top:</div>
-                <input
-                  type="number"
-                  value={rect?.y}
-                  onChange={(e) => changeRectDetail(e.target.value, 'y')}
-                />
-              </div>
-              <div className="boundingBox">
-                <div> Box Left:</div>
-                <input
-                  type="number"
-                  value={rect?.x}
-                  onChange={(e) => changeRectDetail(e.target.value, 'x')}
-                />
-              </div>
-              <div className="boundingBox">
-                <div> Box Height:</div>
-                <input
-                  type="number"
-                  value={rect?.height}
-                  onChange={(e) => changeRectDetail(e.target.value, 'height')}
-                />
-              </div>
-              <div className="boundingBox">
-                <div>Box Width:</div>
-                <input
-                  type="number"
-                  value={rect?.width}
-                  onChange={(e) => changeRectDetail(e.target.value, 'width')}
-                />
-              </div>
-              <div className="boundingBox">
-                <div> Box Name:</div>
+                <div> Box Name</div>
                 <input
                   type="text"
                   value={rect?.name}
@@ -454,7 +458,39 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
                 />
               </div>
               <div className="boundingBox">
-                <div>Border Color:</div>
+                <div> Box Top</div>
+                <input
+                  type="number"
+                  value={rect?.y}
+                  onChange={(e) => changeRectDetail(e.target.value, 'y')}
+                />
+              </div>
+              <div className="boundingBox">
+                <div> Box Left</div>
+                <input
+                  type="number"
+                  value={rect?.x}
+                  onChange={(e) => changeRectDetail(e.target.value, 'x')}
+                />
+              </div>
+              <div className="boundingBox">
+                <div> Box Height</div>
+                <input
+                  type="number"
+                  value={rect?.height}
+                  onChange={(e) => changeRectDetail(e.target.value, 'height')}
+                />
+              </div>
+              <div className="boundingBox">
+                <div>Box Width</div>
+                <input
+                  type="number"
+                  value={rect?.width}
+                  onChange={(e) => changeRectDetail(e.target.value, 'width')}
+                />
+              </div>
+              <div className="boundingBox">
+                <div>Border Color</div>
                 <Menu
                   isOpen={showColorPalate}
                   onClose={() => setShowColorPalate(false)}
@@ -502,7 +538,7 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
                 </Menu>
               </div>
               <div className="boundingBox">
-                <div>Hotspot Top:</div>
+                <div>Hotspot Top</div>
                 <input
                   type="number"
                   value={rect?.hotspotY}
@@ -510,7 +546,7 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
                 />
               </div>
               <div className="boundingBox">
-                <div> Hotspot Left:</div>
+                <div> Hotspot Left</div>
                 <input
                   type="number"
                   value={rect?.hotspotX}
@@ -538,6 +574,11 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
               </div>
             </div>
           </>
+        ) : (
+          <div className="userText">
+            {' '}
+            Click the crop icon and draw a rectangle in image{' '}
+          </div>
         )}
       </div>
     </div>

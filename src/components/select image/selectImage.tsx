@@ -190,6 +190,7 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }: any) => {
                   select image...
                 </Select.Option>
                 {(imageAssets || []).map((element: any) => {
+                  console.log(element, 'Element')
                   return (
                     <Select.Option value={element?.sys?.id} key={Math.random()}>
                       {element?.fields?.title?.['en-US']}

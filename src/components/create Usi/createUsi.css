@@ -2,8 +2,7 @@
     display: flex;
     height: 100vh;
     width: 100%;
-    max-width: 1440px;
-    background-color: #f1f1f1;
+    /* max-width: 1440px; */
 }
 .back_button{
     display: flex;
@@ -29,10 +28,11 @@
 }
 .hotspotlist_title{
     display: flex;
+    font-weight: bold;
     position: sticky;
     color: black;
     top: 0px;
-    width: calc(100% - 20px);
+    width:100%;
     padding: 10px;
     background-color: #ffffff;
     border: 1px solid rgb(206, 206, 206);
@@ -42,10 +42,10 @@
 }
 .hotspot_card{
     display: flex;
-    width: calc(100% - 20px);
+    width:100%;
     padding: 10px;
     color: black;
-    min-height: 100px;
+    min-height: 80px;
     flex-direction: column;
     border: 1px solid rgb(206, 206, 206);
     border-radius: 8px;
@@ -53,7 +53,7 @@
 }
 .cancel_icon{
     display: flex;
-    height: 40px;
+    height: 30px;
     width: 100%;
     justify-content: flex-end;
 }
@@ -70,10 +70,10 @@
 }
 .hotspot_title_container:hover{
     cursor: pointer;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;}
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; }
 .hotspot_image_logo{
     display: flex;
-    border-radius: 50px;
+    border-radius: 5px;
     height: 15px;
     width: 15px;
     background-color: burlywood;
@@ -110,11 +110,13 @@
 .hotspot_details_container{
     display: flex;
     width: 20%;
+    padding: 10px;
     max-height: 100%;
 }
 .image_title{
     display: flex;
     color: black;
+    font-weight: bold;
     /* width: 78%; */
     /* height: 100%; */
     align-items: center;
@@ -158,6 +160,8 @@
 
 .imageContainer{
     height: 60%;
+    display: flex;
+    position: relative;
 }
 
 .imageDetailMainContainer{
@@ -185,7 +189,7 @@
 .boundingBoxDetailContainer{
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 20px;
     flex-direction: column;
 }
 
@@ -205,12 +209,14 @@
     align-items: center;
     justify-content: space-between;
 }
-
+#usiCanvas{
+width: 100%;
+}
 .boundingBox{
     display: flex;
+    height: 7%;
     align-items: center;
-    height: 30px;
-    /* background-color: rgb(232 232 232); */
+    background-color: rgb(242, 242, 242);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     padding: 6px ;
     border-radius: 3px;
@@ -218,12 +224,12 @@
     margin-left: 2px;
 }
 .boundingBox :nth-child(1) {
-    width: 30%;
+    width: 50%;
     color: #242222;
 }
 
 .boundingBox > input {
-    width: 70%;
+    width: 50%;
     height: 100%;
     border: none;
     /* background-color: rgb(232 232 232); */
@@ -245,4 +251,11 @@
 .cropButton > span {
     width: 30px;
     height: 30px;
+}
+.userText{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    text-align: center;
+    height: 100%;
 }

@@ -16,7 +16,12 @@ const Usi = ({ sdk }) => {
           imageUrl={imageUrl}
         />
       ) : (
-        <CreateUsi setImageUrl={setImageUrl} imageUrl={imageUrl} sdk={sdk} />
+        <CreateUsi
+          setImageUrl={setImageUrl}
+          setImageStatus={setImageStatus}
+          imageUrl={imageUrl}
+          sdk={sdk}
+        />
       )}
     </div>
   )
