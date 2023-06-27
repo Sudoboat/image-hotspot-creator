@@ -13,7 +13,7 @@ import { ArrowForwardIcon } from '@contentful/f36-icons'
 import { element } from 'prop-types'
 import cloneDeep from 'clone-deep'
 
-const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }) => {
+const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }: any) => {
   //import
   const contentful = require('contentful-management')
   const assetContentful = require('contentful')
@@ -46,8 +46,8 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }) => {
   }
 
   //get contentful image url
-  const getImageUrl = async (id: string, status) => {
-    const asset = await assetClient.getAsset(id).then((asset) => {
+  const getImageUrl = async (id: string, status: any) => {
+    const asset = await assetClient.getAsset(id).then((asset: any) => {
       if (status) {
         setUrl({ url: 'http:' + asset?.fields?.file?.url, contentful: true })
       } else {
@@ -65,7 +65,7 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }) => {
   useEffect(() => {
     console.log(url, 'url')
   }, [url])
-  const convertBuffer = async (file) => {
+  const convertBuffer = async (file: any) => {
     const data = await new Promise((resolve, reject) => {
       var reader = new FileReader()
       reader.onload = () => {
@@ -90,12 +90,12 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }) => {
     }
   }
 
-  const uploadImage = async (bufferData, file) => {
+  const uploadImage = async (bufferData: any, file: any) => {
     setImageAssets('')
     const data = await client
       .getSpace('ov64r3ga08sj')
-      .then((space) => space.getEnvironment('master'))
-      .then((environment) =>
+      .then((space: any) => space.getEnvironment('master'))
+      .then((environment: any) =>
         environment.createAssetFromFiles({
           fields: {
             title: {
@@ -114,8 +114,8 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }) => {
           },
         })
       )
-      .then((asset) => asset.processForAllLocales())
-      .then((asset) => {
+      .then((asset: any) => asset.processForAllLocales())
+      .then((asset: any) => {
         console.log(asset?.sys?.id, 'asset')
         getImageUrl(asset?.sys?.id)
         asset.publish()

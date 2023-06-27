@@ -2,6 +2,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import './createUsi.css'
 import 'react-image-crop/dist/ReactCrop.css'
+import CloseIcon from '@mui/icons-material/Close'
+import EditIcon from '@mui/icons-material/Edit'
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
+import sample from '../../assets/usi-image/sample.jpg'
 import usiImage from '../../assets/usi-image/ikeausi.avif'
 import crop from '../../assets/crop-image/crop.png'
 import ColorPicker from 'react-pick-color'
@@ -14,6 +19,7 @@ import {
   Menu,
 } from '@contentful/f36-components'
 import { element } from 'prop-types'
+import { Box } from '@mui/material'
 
 const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
   interface boundingBoxDetail {
@@ -121,7 +127,7 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
         name: '',
         borderColor: `#FF0000`,
       })
-      console.log(tempRectArr, 'ttttt')
+      console.log(tempRectArr, 'hiiii')
       setRectArray(tempRectArr)
     }
   }
@@ -129,7 +135,6 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
   const handleMouseMove = (event: any) => {
     if (canDraw) {
       if (!isDrawing.current) return
-
       const { offsetX, offsetY } = event.nativeEvent
       let temporaryBoundingBox = cloneDeep(draftRect)
       const width = offsetX - temporaryBoundingBox.x
@@ -156,12 +161,24 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
 
   const handleMouseUp = () => {
     if (!canDraw) return
-    console.log('handle mouse up calling')
-    setShowDetail(true)
-    isDrawing.current = false
-    let temprectArr = cloneDeep(rectArray)
+    console.log('hiiii')
+    let tempRect = cloneDeep(rect)
+    console.log(tempRect, 'hiii hiii')
+    if (tempRect.width == 0) {
+      let BoundingArray = cloneDeep(rectArray)
+      BoundingArray.shift()
+      console.log(BoundingArray, 'hiii  ii')
+      setRectArray(BoundingArray)
+    } else {
+      console.log(tempRect, 'hiiiii iiiiiiiiiii')
+      setShowDetail(true)
 
-    setNextDraw(false)
+      let temprectArr = cloneDeep(rectArray)
+      setNextDraw(false)
+      // setRect()
+    }
+    isDrawing.current = false
+
     // setCanDraw(false)
   }
 
@@ -202,12 +219,25 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
     setRect(tempRect)
   }
   const saveBoundingBox = () => {
+    console.log('SaveRect')
     setListArray(rectArray)
+    setCanDraw(false)
     setShowDetail(false)
     setNextDraw(true)
     setSelectedBoundingBoxIndex(null)
+    setRect({
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      name: '',
+      borderColor: `#FF0000`,
+    })
     sdk.entry.fields.hotspots.setValue({ image: imageUrl, hotspots: rectArray })
   }
+  useEffect(() => {
+    console.log(rect)
+  }, [rect])
 
   const deleteBoundingBox = (index: any, e: any) => {
     e.stopPropagation()
@@ -299,18 +329,67 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
 
   return (
     <div className="createContainer">
-      <div className="imageSection">
-        <div style={{ marginBottom: '10px' }}>
-          <Stack>
-            <Button
-              isActive={canDraw}
+      <div className="back_button">
+        <KeyboardBackspaceIcon />
+      </div>
+      <div className="hotspotlist_container">
+        <div className="hotspotlist_title">Existing Hotspots</div>
+
+        {listArray.length > 0
+          ? listArray.map((rect, index) => {
+              // let elem = drawCanvasImage(rect, `myCanvas-${index}`)
+              // console.log(elem, 'elem')
+              return (
+                <div className="hotspot_card" key={index}>
+                  <div
+                    className="cancel_icon"
+                    onClick={(e) => deleteBoundingBox(index, e)}
+                    role="none"
+                  >
+                    <CloseIcon color="error" />
+                  </div>
+                  <div className="hotspot_title_container">
+                    <div
+                      className="hotspot_image_logo"
+                      style={{
+                        background: rect.borderColor,
+                      }}
+                    ></div>
+                    <div className="hotpot_title">
+                      {rect?.name ? rect?.name : 'bounding box'}
+                    </div>
+                  </div>
+                </div>
+              )
+            })
+          : ''}
+      </div>
+      <div className="image_container">
+        <div className="image_title_container">
+          <div className="image_title">vijayaragavan sudoboat.jpg</div>
+          <div className="add_hotspot_button">
+            Create hotspot
+            <div
+              className="add_icon"
+              style={
+                !canDraw ? { opacity: 1 } : { opacity: 0.5, cursor: 'auto' }
+              }
               onClick={() => setCanDraw(!canDraw)}
-              className="cropButton"
+              role="none"
             >
-              <img width={'25px'} src={crop} alt="" />
-            </Button>
-          </Stack>
+              <AddPhotoAlternateIcon color="primary" />
+            </div>
+          </div>
         </div>
+        {/* <div className="editable_image_container">
+          <div className="editable_image">
+            <img
+              src={usiImage}
+              style={{ width: '100%', height: '100%' }}
+              alt="Editable_Image"
+            />
+          </div>
+        </div> */}
         <div id="imageContainer" className="imageContainer">
           <div style={{ position: 'relative', width: '100%', height: '100%' }}>
             <canvas
@@ -329,197 +408,137 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk }) => {
             />
           </div>
         </div>
-        <div className="imageDetailMainContainer">
-          {showDetail && (
-            <>
-              <div className="imageDetailContainer">
-                <div className="boundingBoxDetailContainer">
-                  <div className="boundingBox">
-                    <div> Box Top:</div>
-                    <input
-                      type="number"
-                      value={rect?.y}
-                      onChange={(e) => changeRectDetail(e.target.value, 'y')}
-                    />
-                  </div>
-                  <div className="boundingBox">
-                    <div> Box Left:</div>
-                    <input
-                      type="number"
-                      value={rect?.x}
-                      onChange={(e) => changeRectDetail(e.target.value, 'x')}
-                    />
-                  </div>
-                  <div className="boundingBox">
-                    <div> Box Height:</div>
-                    <input
-                      type="number"
-                      value={rect?.height}
-                      onChange={(e) =>
-                        changeRectDetail(e.target.value, 'height')
-                      }
-                    />
-                  </div>
-                  <div className="boundingBox">
-                    <div>Box Width:</div>
-                    <input
-                      type="number"
-                      value={rect?.width}
-                      onChange={(e) =>
-                        changeRectDetail(e.target.value, 'width')
-                      }
-                    />
-                  </div>
-                  <div className="boundingBox">
-                    <div> Box Name:</div>
-                    <input
-                      type="text"
-                      value={rect?.name}
-                      onChange={(e) => changeRectDetail(e.target.value, 'name')}
-                    />
-                  </div>
-                  <div className="boundingBox">
-                    <div>Border Color:</div>
-                    <Menu
-                      isOpen={showColorPalate}
-                      onClose={() => setShowColorPalate(false)}
-                    >
-                      <Menu.Trigger>
-                        <div
-                          style={{
-                            background: `${rect?.borderColor}`,
-                            width: '20px',
-                            height: '20px',
-                            border: '1px solid gray',
-                          }}
-                          onClick={() => setShowColorPalate(!showColorPalate)}
-                          role="none"
-                        ></div>
-                      </Menu.Trigger>
-                      <Menu.List
-                        style={{
-                          display: 'flex',
-                          width: '190px',
-                          flexWrap: 'wrap',
-                          height: '150px',
-                          gap: '10px',
-                          padding: '10px',
-                        }}
-                      >
-                        {colorPalateList.map((element, index) => {
-                          return (
-                            <div
-                              key={index}
-                              style={{
-                                width: '20px',
-                                height: '20px',
-                                background: `${element}`,
-                              }}
-                              onClick={() => {
-                                setRect({ ...rect, ['borderColor']: element })
-                                setShowColorPalate(false)
-                              }}
-                              role="none"
-                            ></div>
-                          )
-                        })}
-                      </Menu.List>
-                    </Menu>
-                  </div>
-                  <div className="boundingBox">
-                    <div>Hotspot Top:</div>
-                    <input
-                      type="number"
-                      value={rect?.hotspotY}
-                      onChange={(e) =>
-                        changeRectDetail(e.target.value, 'hotspotY')
-                      }
-                    />
-                  </div>
-                  <div className="boundingBox">
-                    <div> Hotspot Left:</div>
-                    <input
-                      type="number"
-                      value={rect?.hotspotX}
-                      onChange={(e) =>
-                        changeRectDetail(e.target.value, 'hotspotX')
-                      }
-                    />
-                  </div>
-                  <div className="buttonSection">
-                    <Stack>
-                      <Button
-                        variant="primary"
-                        size="small"
-                        isDisabled={rect?.name ? false : true}
-                        onClick={() => saveBoundingBox()}
-                      >
-                        save
-                      </Button>
-                      <Button
-                        onClick={() => cancelBoundingBox()}
-                        variant="negative"
-                        size="small"
-                      >
-                        cancel
-                      </Button>
-                    </Stack>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
       </div>
-      <div className="hotspotSection">
-        {listArray.length > 0
-          ? listArray.map((rect, index) => {
-              // let elem = drawCanvasImage(rect, `myCanvas-${index}`)
-              // console.log(elem, 'elem')
-              return (
-                <div
-                  key={index}
-                  className="boundingBoxList"
-                  onClick={() => setSelectedBoundingBoxIndex(index)}
-                  role="none"
+      <div className="hotspot_details_container">
+        {showDetail && (
+          <>
+            <div className="boundingBoxDetailContainer">
+              <div className="boundingBox">
+                <div> Box Top:</div>
+                <input
+                  type="number"
+                  value={rect?.y}
+                  onChange={(e) => changeRectDetail(e.target.value, 'y')}
+                />
+              </div>
+              <div className="boundingBox">
+                <div> Box Left:</div>
+                <input
+                  type="number"
+                  value={rect?.x}
+                  onChange={(e) => changeRectDetail(e.target.value, 'x')}
+                />
+              </div>
+              <div className="boundingBox">
+                <div> Box Height:</div>
+                <input
+                  type="number"
+                  value={rect?.height}
+                  onChange={(e) => changeRectDetail(e.target.value, 'height')}
+                />
+              </div>
+              <div className="boundingBox">
+                <div>Box Width:</div>
+                <input
+                  type="number"
+                  value={rect?.width}
+                  onChange={(e) => changeRectDetail(e.target.value, 'width')}
+                />
+              </div>
+              <div className="boundingBox">
+                <div> Box Name:</div>
+                <input
+                  type="text"
+                  value={rect?.name}
+                  onChange={(e) => changeRectDetail(e.target.value, 'name')}
+                />
+              </div>
+              <div className="boundingBox">
+                <div>Border Color:</div>
+                <Menu
+                  isOpen={showColorPalate}
+                  onClose={() => setShowColorPalate(false)}
                 >
-                  <div className="listDetail">
-                    <div style={{ width: '50px', color: 'black' }}>
-                      {index + 1}
-                    </div>
+                  <Menu.Trigger>
                     <div
                       style={{
-                        width: '30px',
-                        height: '30px',
-                        background: rect.borderColor,
+                        background: `${rect?.borderColor}`,
+                        width: '20px',
+                        height: '20px',
                         border: '1px solid gray',
                       }}
+                      onClick={() => setShowColorPalate(!showColorPalate)}
+                      role="none"
                     ></div>
-                    <div
-                      style={{
-                        width: '250px',
-                        color: 'black',
-                        fontFamily: 'sans-serif',
-                      }}
-                    >
-                      {rect?.name ? rect?.name : 'bounding box'}
-                    </div>
-                  </div>
-                  <div>
-                    <Stack>
-                      <Button
-                        onClick={(e) => deleteBoundingBox(index, e)}
-                        variant="negative"
-                        size="small"
-                      >
-                        Delete
-                      </Button>
-                    </Stack>
-                  </div>
-                </div>
-              )
-            })
-          : ''}
+                  </Menu.Trigger>
+                  <Menu.List
+                    style={{
+                      display: 'flex',
+                      width: '190px',
+                      flexWrap: 'wrap',
+                      height: '150px',
+                      gap: '10px',
+                      padding: '10px',
+                    }}
+                  >
+                    {colorPalateList.map((element, index) => {
+                      return (
+                        <div
+                          key={index}
+                          style={{
+                            width: '20px',
+                            height: '20px',
+                            background: `${element}`,
+                          }}
+                          onClick={() => {
+                            setRect({ ...rect, ['borderColor']: element })
+                            setShowColorPalate(false)
+                          }}
+                          role="none"
+                        ></div>
+                      )
+                    })}
+                  </Menu.List>
+                </Menu>
+              </div>
+              <div className="boundingBox">
+                <div>Hotspot Top:</div>
+                <input
+                  type="number"
+                  value={rect?.hotspotY}
+                  onChange={(e) => changeRectDetail(e.target.value, 'hotspotY')}
+                />
+              </div>
+              <div className="boundingBox">
+                <div> Hotspot Left:</div>
+                <input
+                  type="number"
+                  value={rect?.hotspotX}
+                  onChange={(e) => changeRectDetail(e.target.value, 'hotspotX')}
+                />
+              </div>
+              <div className="buttonSection">
+                <Stack>
+                  <Button
+                    variant="primary"
+                    size="small"
+                    isDisabled={rect?.name ? false : true}
+                    onClick={() => saveBoundingBox()}
+                  >
+                    save
+                  </Button>
+                  <Button
+                    onClick={() => cancelBoundingBox()}
+                    variant="negative"
+                    size="small"
+                  >
+                    cancel
+                  </Button>
+                </Stack>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
