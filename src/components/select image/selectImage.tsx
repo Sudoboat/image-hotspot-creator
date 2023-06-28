@@ -2,18 +2,19 @@
 import React, { useEffect, useState } from 'react'
 import MagicDropzone from 'react-magic-dropzone'
 import './selectImage.css'
-import {
-  Button,
-  Stack,
-  Select,
-  FormControl,
-  Spinner,
-} from '@contentful/f36-components'
+import { Button, Stack, Select, Spinner } from '@contentful/f36-components'
 import { ArrowForwardIcon } from '@contentful/f36-icons'
 import { element } from 'prop-types'
 import cloneDeep from 'clone-deep'
 
-const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }: any) => {
+const SelectImage = ({
+  setImageUrl,
+  setImageStatus,
+  imageUrl,
+  setSelectedImage,
+  selectedImage,
+  setImageName,
+}: any) => {
   //import
   const contentful = require('contentful-management')
   const assetContentful = require('contentful')
@@ -21,6 +22,7 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }: any) => {
   //state Declaratios
   const [imageFile, setImageFile] = useState()
   const [imageAssets, setImageAssets] = useState()
+
   const [url, setUrl] = useState({
     url: '',
     contentful: true,
@@ -54,17 +56,16 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }: any) => {
         setImageUrl('http:' + asset?.fields?.file?.url)
         setImageStatus(true)
       }
+      console.log(asset?.fields?.title)
+      setImageName(asset?.fields?.title)
     })
   }
 
   const onDrop = (accepted: any) => {
-    console.log(accepted[0])
     setImageFile(accepted[0])
     setUrl({ url: accepted[0], contentful: false })
   }
-  useEffect(() => {
-    console.log(url, 'url')
-  }, [url])
+
   const convertBuffer = async (file: any) => {
     const data = await new Promise((resolve, reject) => {
       var reader = new FileReader()
@@ -76,16 +77,14 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }: any) => {
     })
     return data
   }
+
   const goToCreateUsi = async () => {
-    // setImageStatus(true)
-    console.log('im called')
     let tempUrl = cloneDeep(url)
     if (tempUrl.contentful) {
       setImageUrl(tempUrl.url)
       setImageStatus(true)
     } else {
       let bufferFile = await convertBuffer(tempUrl.url)
-      console.log(bufferFile, 'buffer')
       uploadImage(bufferFile, imageFile)
     }
   }
@@ -116,7 +115,6 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }: any) => {
       )
       .then((asset: any) => asset.processForAllLocales())
       .then((asset: any) => {
-        console.log(asset?.sys?.id, 'asset')
         getImageUrl(asset?.sys?.id)
         asset.publish()
       })
@@ -183,14 +181,19 @@ const SelectImage = ({ setImageUrl, setImageStatus, imageUrl }: any) => {
               <Select
                 name="optionSelect"
                 id="optionSelect"
-                defaultValue=""
-                onChange={(e) => getImageUrl(e.target.value, true)}
+                // defaultValue=""
+                value={selectedImage}
+                onChange={(e) => {
+                  console.log(e.target.innerHTML)
+                  setSelectedImage(e.target.value)
+                  getImageUrl(e.target.value, true)
+                }}
               >
                 <Select.Option value="" isDisabled>
                   select image...
                 </Select.Option>
                 {(imageAssets || []).map((element: any) => {
-                  console.log(element, 'Element')
+                  // console.log(element, 'Element')
                   return (
                     <Select.Option value={element?.sys?.id} key={Math.random()}>
                       {element?.fields?.title?.['en-US']}

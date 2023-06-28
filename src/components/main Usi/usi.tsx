@@ -6,6 +6,8 @@ import './usi.css'
 const Usi = ({ sdk }) => {
   const [imageUrl, setImageUrl] = useState()
   const [imageStatus, setImageStatus] = useState(false)
+  const [selectedImage, setSelectedImage] = useState('')
+  const [imageName, setImageName] = useState<any>({ name: '', id: '' })
 
   return (
     <div className="mainContainer">
@@ -14,6 +16,9 @@ const Usi = ({ sdk }) => {
           setImageUrl={setImageUrl}
           setImageStatus={setImageStatus}
           imageUrl={imageUrl}
+          selectedImage={selectedImage}
+          setImageName={setImageName}
+          setSelectedImage={setSelectedImage}
         />
       ) : (
         <CreateUsi
@@ -21,6 +26,8 @@ const Usi = ({ sdk }) => {
           setImageStatus={setImageStatus}
           imageUrl={imageUrl}
           sdk={sdk}
+          imageName={imageName}
+          selectedImage={selectedImage}
         />
       )}
     </div>

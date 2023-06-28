@@ -10,7 +10,14 @@ import { Button, Stack, Menu } from '@contentful/f36-components'
 import { element } from 'prop-types'
 import { Alert, Box, Snackbar, Tooltip } from '@mui/material'
 
-const CreateUsi = ({ setImageUrl, imageUrl, sdk, setImageStatus }: any) => {
+const CreateUsi = ({
+  setImageUrl,
+  imageUrl,
+  sdk,
+  setImageStatus,
+  selectedImage,
+  imageName,
+}: any) => {
   const canvasRef = useRef<any>(null)
   const containerRef = useRef<any>(null)
   const imageRef = useRef<any>(null)
@@ -399,7 +406,7 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk, setImageStatus }: any) => {
       </div>
       <div className="image_container">
         <div className="image_title_container">
-          <div className="image_title">Image Editor</div>
+          <div className="image_title">{imageName}</div>
           <div className="add_hotspot_button">
             <div
               className="add_icon"
@@ -571,18 +578,14 @@ const CreateUsi = ({ setImageUrl, imageUrl, sdk, setImageStatus }: any) => {
               <div className="buttonSection">
                 <Stack>
                   <Button
-                    variant="primary"
+                    variant="positive"
                     size="small"
                     isDisabled={rect?.name ? false : true}
                     onClick={() => saveBoundingBox()}
                   >
                     save
                   </Button>
-                  <Button
-                    onClick={() => cancelBoundingBox()}
-                    variant="negative"
-                    size="small"
-                  >
+                  <Button onClick={() => cancelBoundingBox()} size="small">
                     cancel
                   </Button>
                 </Stack>
