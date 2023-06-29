@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import MagicDropzone from 'react-magic-dropzone'
 import './selectImage.css'
 import { Button, Stack, Select, Spinner } from '@contentful/f36-components'
-import { ArrowForwardIcon } from '@contentful/f36-icons'
 import { element } from 'prop-types'
 import cloneDeep from 'clone-deep'
 

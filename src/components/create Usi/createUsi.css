@@ -94,6 +94,7 @@
     height: 15px;
     width: 15px;
     background-color: burlywood;
+    border: 0.5px solid gray;
 }
 
 .hotpot_title{
