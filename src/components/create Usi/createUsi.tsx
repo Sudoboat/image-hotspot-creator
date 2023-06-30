@@ -21,6 +21,7 @@ const CreateUsi = ({
   const canvasRef = useRef<any>(null)
   const containerRef = useRef<any>(null)
   const imageRef = useRef<any>(null)
+  const [editing, setEditing] = useState<any>(false)
   const [rect, setRect] = useState<any>({
     x: 0,
     y: 0,
@@ -254,6 +255,8 @@ const CreateUsi = ({
     let tempArr = cloneDeep(rectArray)
     tempArr.splice(index, 1)
     setSelectedBoundingBoxIndex(null)
+    setShowDetail(false)
+    setEditing(false)
     setRectArray(tempArr)
     setListArray(tempArr)
     sdk.entry.fields.imageUrl.setValue(imageUrl)
@@ -269,6 +272,7 @@ const CreateUsi = ({
     setShowDetail(false)
     setNextDraw(true)
     setCanDraw(false)
+    setEditing(false)
     setSelectedBoundingBoxIndex(null)
     // sdk.entry.fields.imageUrl.setValue(imageUrl)
     // sdk.entry.fields.hotspots.setValue({ hotspots: listArray })
@@ -378,7 +382,10 @@ const CreateUsi = ({
                   </div>
                   <div
                     className="hotspot_title_container"
-                    onClick={() => setSelectedBoundingBoxIndex(index)}
+                    onClick={() => {
+                      setSelectedBoundingBoxIndex(index)
+                      setEditing(true)
+                    }}
                     role="none"
                   >
                     <div
@@ -402,21 +409,31 @@ const CreateUsi = ({
             {imageName ? imageName : 'Image Editor'}
           </div>
           <div className="add_hotspot_button">
-            <div
-              className="add_icon"
-              style={
-                !canDraw ? { opacity: 1 } : { opacity: 0.5, cursor: 'auto' }
-              }
-              onClick={() => {
-                handleClick()
-                setCanDraw(!canDraw)
-              }}
-              role="none"
-            >
-              <Tooltip title="Select Area" placement="left">
+            {editing ? (
+              <div
+                className="add_icon"
+                style={{ opacity: 0.5, cursor: 'auto' }}
+                role="none"
+              >
                 <CropIcon color="primary" />
-              </Tooltip>
-            </div>
+              </div>
+            ) : (
+              <div
+                className="add_icon"
+                style={
+                  !canDraw ? { opacity: 1 } : { opacity: 0.5, cursor: 'auto' }
+                }
+                onClick={() => {
+                  handleClick()
+                  setCanDraw(!canDraw)
+                }}
+                role="none"
+              >
+                <Tooltip title="Select Area" placement="left">
+                  <CropIcon color="primary" />
+                </Tooltip>
+              </div>
+            )}
           </div>
         </div>
 
