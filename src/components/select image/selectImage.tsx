@@ -19,8 +19,8 @@ const SelectImage = ({
   const assetContentful = require('contentful')
 
   //state Declaratios
-  const [imageFile, setImageFile] = useState()
-  const [imageAssets, setImageAssets] = useState()
+  const [imageFile, setImageFile] = useState<any>()
+  const [imageAssets, setImageAssets] = useState<any>()
 
   const [url, setUrl] = useState({
     url: '',
@@ -48,14 +48,13 @@ const SelectImage = ({
 
   //get contentful image url
   const getImageUrl = async (id: string, status: any) => {
-    const asset = await assetClient.getAsset(id).then((asset: any) => {
+    await assetClient.getAsset(id).then((asset: any) => {
       if (status) {
         setUrl({ url: 'http:' + asset?.fields?.file?.url, contentful: true })
       } else {
         setImageUrl('http:' + asset?.fields?.file?.url)
         setImageStatus(true)
       }
-      console.log(asset?.fields?.title)
       setImageName(asset?.fields?.title)
     })
   }
@@ -74,6 +73,7 @@ const SelectImage = ({
       reader.onerror = reject
       reader.readAsArrayBuffer(file)
     })
+    console.log(data, 'data')
     return data
   }
 
@@ -114,7 +114,7 @@ const SelectImage = ({
       )
       .then((asset: any) => asset.processForAllLocales())
       .then((asset: any) => {
-        getImageUrl(asset?.sys?.id)
+        getImageUrl(asset?.sys?.id, false)
         asset.publish()
       })
       .catch(console.error)
@@ -183,7 +183,6 @@ const SelectImage = ({
                 // defaultValue=""
                 value={selectedImage}
                 onChange={(e) => {
-                  console.log(e.target.innerHTML)
                   setSelectedImage(e.target.value)
                   getImageUrl(e.target.value, true)
                 }}
@@ -211,6 +210,7 @@ const SelectImage = ({
               <Stack>
                 <Button
                   variant="primary"
+                  testId="ProceedButton"
                   isDisabled={url.url ? false : true}
                   onClick={() => goToCreateUsi()}
                 >

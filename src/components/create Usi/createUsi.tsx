@@ -11,7 +11,6 @@ import { element } from 'prop-types'
 import { Alert, Box, Snackbar, Tooltip } from '@mui/material'
 
 const CreateUsi = ({
-  setImageUrl,
   imageUrl,
   sdk,
   setImageStatus,
@@ -27,8 +26,8 @@ const CreateUsi = ({
     y: 0,
     width: 0,
     height: 0,
-    name: '',
-    borderColor: `#FF0000`,
+    name: 'Boundingbox',
+    borderColor: `#ffffff`,
     hotspotX: 0,
     hotspotY: 0,
   })
@@ -68,28 +67,25 @@ const CreateUsi = ({
     y: 0,
     width: 0,
     height: 0,
-    name: '',
-    borderColor: `#FF0000`,
+    name: 'Boundingbox',
+    borderColor: `#ffffff`,
     hotspotX: 0,
     hotspotY: 0,
   })
   const [canvasInfo, setCanvas] = useState<any>()
+  const [open, setOpen] = React.useState(false)
 
   useEffect(() => {
     const container = containerRef.current
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
     const image = imageRef.current
-
     image.onload = () => {
       const containerWidth = container.offsetWidth
       const containerHeight = container.offsetHeight
 
       const imageWidth = image.width
       const imageHeight = image.height
-
-      console.log(containerHeight, containerWidth, 'cont h W')
-      console.log(imageHeight, imageWidth, 'im h W')
 
       const widthRatio = containerWidth / imageWidth
       const heightRatio = containerHeight / imageHeight
@@ -98,18 +94,24 @@ const CreateUsi = ({
 
       const scaledWidth = imageWidth * scale
       const scaledHeight = imageHeight * scale
-      console.log(scaledWidth, scaledHeight, 'Scaled w h')
 
       const drawX = (containerWidth - scaledWidth) / 2
       const drawY = (containerHeight - scaledHeight) / 2
 
       canvas.width = scaledWidth
       canvas.height = scaledHeight
-      console.log(canvas.width, canvas.height, 'canvas w h')
       context.drawImage(image, 0, 0, scaledWidth, scaledHeight)
       setCanvas(canvas)
-      setRectArray(sdk.entry.fields.hotspots.getValue().hotspots)
-      setListArray(sdk.entry.fields.hotspots.getValue().hotspots)
+      if (sdk.entry.fields.hotspots.getValue().hotspots) {
+        setRectArray(sdk.entry.fields.hotspots.getValue().hotspots)
+        setListArray(sdk.entry.fields.hotspots.getValue().hotspots)
+      } else {
+        sdk.entry.fields.hotspots.setValue({
+          hotspots: [],
+        })
+        setRectArray(sdk.entry.fields.hotspots.getValue().hotspots)
+        setListArray(sdk.entry.fields.hotspots.getValue().hotspots)
+      }
     }
   }, [])
 
@@ -122,8 +124,8 @@ const CreateUsi = ({
         y: offsetY,
         width: 0,
         height: 0,
-        name: '',
-        borderColor: `#FF0000`,
+        name: 'Boundingbox',
+        borderColor: `#ffffff`,
         hotspotX: 0,
         hotspotY: 0,
       })
@@ -135,8 +137,8 @@ const CreateUsi = ({
         y: offsetY,
         width: 0,
         height: 0,
-        name: '',
-        borderColor: `#FF0000`,
+        name: 'Boundingbox',
+        borderColor: `#ffffff`,
       })
       setRectArray(tempRectArr)
     }
@@ -162,8 +164,7 @@ const CreateUsi = ({
       temporaryBoundingBox.hotspotY =
         temporaryBoundingBox.y + temporaryBoundingBox.height / 2
 
-      console.log(temporaryBoundingBox, 'temp before')
-
+      temporaryBoundingBox.name = 'Boundingbox'
       temporaryBoundingBox.x = (temporaryBoundingBox.x / canvasInfo.width) * 100
       temporaryBoundingBox.y =
         (temporaryBoundingBox.y / canvasInfo.height) * 100
@@ -175,8 +176,6 @@ const CreateUsi = ({
         (temporaryBoundingBox.hotspotX / canvasInfo.width) * 100
       temporaryBoundingBox.hotspotY =
         (temporaryBoundingBox.hotspotY / canvasInfo.height) * 100
-
-      console.log(temporaryBoundingBox, 'After Temp')
 
       let tempRectArr = cloneDeep(rectArray)
       if (tempRectArr.length == 0) {
@@ -204,13 +203,11 @@ const CreateUsi = ({
       borderColor: rect.borderColor,
     }
 
-    console.log(data, 'data')
     if (!canDraw) return
     let tempRect = cloneDeep(rect)
     if (tempRect.width == 0) {
       let BoundingArray = cloneDeep(rectArray)
       BoundingArray.shift()
-      console.log(BoundingArray, 'Array')
       setRectArray(BoundingArray)
     } else {
       setShowDetail(true)
@@ -231,7 +228,6 @@ const CreateUsi = ({
   }
 
   const saveBoundingBox = () => {
-    console.log(rectArray, 'RectArray')
     setListArray(rectArray)
     setCanDraw(false)
     setShowDetail(false)
@@ -242,11 +238,12 @@ const CreateUsi = ({
       y: 0,
       width: 0,
       height: 0,
-      name: '',
-      borderColor: `#FF0000`,
+      name: 'Boundingbox',
+      borderColor: `#ffffff`,
     })
     sdk.entry.fields.imageUrl.setValue(imageUrl)
     sdk.entry.fields.hotspots.setValue({ hotspots: rectArray })
+    setEditing(false)
   }
 
   const deleteBoundingBox = (index: any, e: any) => {
@@ -277,45 +274,49 @@ const CreateUsi = ({
     // sdk.entry.fields.imageUrl.setValue(imageUrl)
     // sdk.entry.fields.hotspots.setValue({ hotspots: listArray })
   }
-  useEffect(() => {
-    const canvas = canvasRef.current
-    const context = canvas.getContext('2d')
-    context.clearRect(0, 0, canvas.width, canvas.height)
-    context.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height)
-    if (rectArray.length > 0) {
-      rectArray.forEach((element: any) => {
-        context.strokeStyle = element.borderColor
-        context.lineWidth = 1.5
-        context.strokeRect(
-          (element.x * canvasInfo.width) / 100,
-          (element.y * canvasInfo.height) / 100,
-          (element.width * canvasInfo.width) / 100,
-          (element.height * canvasInfo.height) / 100
-        )
-        if (element.width != 0 && element.height != 0) {
-          context.beginPath()
-          context.arc(
-            (element.hotspotX * canvas.width) / 100,
-            (element.hotspotY * canvas.height) / 100,
-            10,
-            0,
-            2 * Math.PI
-          )
-          context.fillStyle = 'grey'
-          context.fill()
 
-          context.beginPath()
-          context.arc(
-            (element.hotspotX * canvas.width) / 100,
-            (element.hotspotY * canvas.height) / 100,
-            5,
-            0,
-            2 * Math.PI
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current
+      const context = canvas.getContext('2d')
+      context.clearRect(0, 0, canvas.width, canvas.height)
+      context.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height)
+      if (rectArray.length > 0) {
+        rectArray.forEach((element: any) => {
+          console.log(element, 'element')
+          context.strokeStyle = element.borderColor
+          context.lineWidth = 1.5
+          context.strokeRect(
+            (element.x * canvasInfo.width) / 100,
+            (element.y * canvasInfo.height) / 100,
+            (element.width * canvasInfo.width) / 100,
+            (element.height * canvasInfo.height) / 100
           )
-          context.fillStyle = 'white'
-          context.fill()
-        }
-      })
+          if (element.width != 0 && element.height != 0) {
+            context.beginPath()
+            context.arc(
+              (element.hotspotX * canvas.width) / 100,
+              (element.hotspotY * canvas.height) / 100,
+              10,
+              0,
+              2 * Math.PI
+            )
+            context.fillStyle = 'white'
+            context.fill()
+
+            context.beginPath()
+            context.arc(
+              (element.hotspotX * canvas.width) / 100,
+              (element.hotspotY * canvas.height) / 100,
+              8,
+              0,
+              2 * Math.PI
+            )
+            context.fillStyle = 'rgb(3,111,227)'
+            context.fill()
+          }
+        })
+      }
     }
   }, [rectArray])
 
@@ -342,8 +343,6 @@ const CreateUsi = ({
     }
   }, [selectedBoundingBoxIndex])
 
-  const [open, setOpen] = React.useState(false)
-
   const handleClick = () => {
     setOpen(true)
   }
@@ -354,7 +353,7 @@ const CreateUsi = ({
 
   return (
     <div className="createContainer">
-      <div className="back_button">
+      {/* <div className="back_button">
         <div
           onClick={() => {
             setImageStatus(false)
@@ -363,14 +362,14 @@ const CreateUsi = ({
         >
           <KeyboardBackspaceIcon />
         </div>
-      </div>
+      </div> */}
       <div className="hotspotlist_container">
         <div className="hotspotlist_title">Existing Hotspots</div>
 
         {listArray.length > 0
           ? listArray.map((rect: any, index: any) => {
               // let elem = drawCanvasImage(rect, `myCanvas-${index}`)
-              // console.log(elem, 'elem')
+              console.log(rect, 'rect')
               return (
                 <div className="hotspot_card" key={index}>
                   <div
@@ -387,6 +386,14 @@ const CreateUsi = ({
                       setEditing(true)
                     }}
                     role="none"
+                    style={
+                      selectedBoundingBoxIndex === index
+                        ? {
+                            boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
+                            border: '1px solid rgb(3,111,227)',
+                          }
+                        : {}
+                    }
                   >
                     <div
                       className="hotspot_image_logo"
@@ -406,7 +413,7 @@ const CreateUsi = ({
       <div className="image_container">
         <div className="image_title_container">
           <div className="image_title">
-            {imageName ? imageName : 'Image Editor'}
+            {imageName?.name ? imageName?.name : 'Image Editor'}
           </div>
           <div className="add_hotspot_button">
             {editing ? (

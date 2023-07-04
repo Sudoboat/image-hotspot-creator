@@ -11,7 +11,6 @@ const Usi = ({ sdk }) => {
   useEffect(() => {
     if (sdk.entry.fields.imageUrl.getValue()) {
       const url = sdk.entry.fields.imageUrl.getValue()
-      console.log(sdk.entry.fields)
       setImageUrl(url)
       setImageName(sdk.entry.fields.title.getValue())
       setSelectedImage(sdk.entry.fields.title.getValue())
@@ -19,9 +18,7 @@ const Usi = ({ sdk }) => {
     }
   }, [])
 
-  useEffect(() => {
-    console.log(imageUrl)
-  }, [imageUrl])
+
 
   return (
     <div className="mainContainer">
