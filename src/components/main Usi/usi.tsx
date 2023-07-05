@@ -2,12 +2,22 @@ import React, { useEffect, useState } from 'react'
 import SelectImage from '../select image/selectImage'
 import CreateUsi from '../create Usi/createUsi'
 import './usi.css'
+const contentful = require('contentful-management')
 
 const Usi = ({ sdk }) => {
+  const [url, setUrl] = useState({
+    url: '',
+    contentful: true,
+  })
   const [imageUrl, setImageUrl] = useState<any>()
   const [imageStatus, setImageStatus] = useState(false)
   const [selectedImage, setSelectedImage] = useState('')
-  const [imageName, setImageName] = useState<any>({ name: '', id: '' })
+  const [imageName, setImageName] = useState<any>()
+  const [imageAssets, setImageAssets] = useState<any>()
+  const client = contentful.createClient({
+    accessToken: 'CFPAT-XKF92MSjNN50kOIwzZbLjsYxwguJHTURek20n68Kl74',
+  })
+
   useEffect(() => {
     if (sdk.entry.fields.imageUrl.getValue()) {
       const url = sdk.entry.fields.imageUrl.getValue()
@@ -18,19 +28,45 @@ const Usi = ({ sdk }) => {
     }
   }, [])
 
+  useEffect(() => {
+    console.log(imageName, 'imagename')
+  }, [])
 
+  //functions
+  const getAssets = async () => {
+    await client
+      .getSpace('ov64r3ga08sj')
+      .then((space: any) => space.getEnvironment('master'))
+      .then((environment: any) => environment.getAssets())
+      .then((response: any) => setImageAssets(response.items))
+      .catch(console.error)
+  }
+
+  useEffect(() => {
+    getAssets()
+  }, [])
 
   return (
     <div className="mainContainer">
       {!imageStatus ? (
-        <SelectImage
-          setImageUrl={setImageUrl}
-          setImageStatus={setImageStatus}
-          imageUrl={imageUrl}
-          selectedImage={selectedImage}
-          setImageName={setImageName}
-          setSelectedImage={setSelectedImage}
-        />
+        imageAssets ? (
+          <SelectImage
+            sdk={sdk}
+            url={url}
+            setUrl={setUrl}
+            imageName={imageName}
+            setImageUrl={setImageUrl}
+            setImageStatus={setImageStatus}
+            imageUrl={imageUrl}
+            selectedImage={selectedImage}
+            setImageName={setImageName}
+            setSelectedImage={setSelectedImage}
+            imageAssets={imageAssets}
+            setImageAssets={setImageAssets}
+          />
+        ) : (
+          ''
+        )
       ) : (
         <CreateUsi
           setImageUrl={setImageUrl}

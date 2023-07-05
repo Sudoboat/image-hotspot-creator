@@ -76,6 +76,7 @@ const CreateUsi = ({
   const [open, setOpen] = React.useState(false)
 
   useEffect(() => {
+    sdk.entry.fields.imageUrl.setValue(imageUrl)
     const container = containerRef.current
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
@@ -102,7 +103,7 @@ const CreateUsi = ({
       canvas.height = scaledHeight
       context.drawImage(image, 0, 0, scaledWidth, scaledHeight)
       setCanvas(canvas)
-      if (sdk.entry.fields.hotspots.getValue().hotspots) {
+      if (sdk.entry.fields.hotspots.getValue()?.hotspots) {
         setRectArray(sdk.entry.fields.hotspots.getValue().hotspots)
         setListArray(sdk.entry.fields.hotspots.getValue().hotspots)
       } else {
@@ -351,25 +352,17 @@ const CreateUsi = ({
     setOpen(false)
   }
 
+  useEffect(() => {
+    console.log(canDraw, 'candraw')
+  }, [canDraw])
+
   return (
     <div className="createContainer">
-      {/* <div className="back_button">
-        <div
-          onClick={() => {
-            setImageStatus(false)
-          }}
-          role="none"
-        >
-          <KeyboardBackspaceIcon />
-        </div>
-      </div> */}
       <div className="hotspotlist_container">
         <div className="hotspotlist_title">Existing Hotspots</div>
 
         {listArray.length > 0
           ? listArray.map((rect: any, index: any) => {
-              // let elem = drawCanvasImage(rect, `myCanvas-${index}`)
-              console.log(rect, 'rect')
               return (
                 <div className="hotspot_card" key={index}>
                   <div
@@ -413,10 +406,10 @@ const CreateUsi = ({
       <div className="image_container">
         <div className="image_title_container">
           <div className="image_title">
-            {imageName?.name ? imageName?.name : 'Image Editor'}
+            {imageName ? imageName : 'Image Editor'}
           </div>
           <div className="add_hotspot_button">
-            {editing ? (
+            {editing || canDraw ? (
               <div
                 className="add_icon"
                 style={{ opacity: 0.5, cursor: 'auto' }}
@@ -454,15 +447,6 @@ const CreateUsi = ({
             Draw a Rectangle over the Image to Create Hotspots!
           </Alert>
         </Snackbar>
-        {/* <div className="editable_image_container">
-          <div className="editable_image">
-            <img
-              src={usiImage}
-              style={{ width: '100%', height: '100%' }}
-              alt="Editable_Image"
-            />
-          </div>
-        </div> */}
         <div
           id="image_container"
           className="editable_image_container"
@@ -501,7 +485,7 @@ const CreateUsi = ({
                 <div> Box Top</div>
                 <input
                   type="number"
-                  value={rect?.y}
+                  value={rect?.y.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'y')}
                 />
               </div>
@@ -509,7 +493,7 @@ const CreateUsi = ({
                 <div> Box Left</div>
                 <input
                   type="number"
-                  value={rect?.x}
+                  value={rect?.x.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'x')}
                 />
               </div>
@@ -517,7 +501,7 @@ const CreateUsi = ({
                 <div> Box Height</div>
                 <input
                   type="number"
-                  value={rect?.height}
+                  value={rect?.height.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'height')}
                 />
               </div>
@@ -525,7 +509,7 @@ const CreateUsi = ({
                 <div>Box Width</div>
                 <input
                   type="number"
-                  value={rect?.width}
+                  value={rect?.width.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'width')}
                 />
               </div>
@@ -581,7 +565,7 @@ const CreateUsi = ({
                 <div>Hotspot Top</div>
                 <input
                   type="number"
-                  value={rect?.hotspotY}
+                  value={rect?.hotspotY.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'hotspotY')}
                 />
               </div>
@@ -589,7 +573,7 @@ const CreateUsi = ({
                 <div> Hotspot Left</div>
                 <input
                   type="number"
-                  value={rect?.hotspotX}
+                  value={rect?.hotspotX.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'hotspotX')}
                 />
               </div>
@@ -601,10 +585,10 @@ const CreateUsi = ({
                     isDisabled={rect?.name ? false : true}
                     onClick={() => saveBoundingBox()}
                   >
-                    save
+                    Save
                   </Button>
                   <Button onClick={() => cancelBoundingBox()} size="small">
-                    cancel
+                    Cancel
                   </Button>
                 </Stack>
               </div>

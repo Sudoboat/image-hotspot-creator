@@ -3,50 +3,49 @@ import React, { useEffect, useState } from 'react'
 import MagicDropzone from 'react-magic-dropzone'
 import './selectImage.css'
 import { Button, Stack, Select, Spinner } from '@contentful/f36-components'
-import { element } from 'prop-types'
 import cloneDeep from 'clone-deep'
+const contentful = require('contentful-management')
+const assetContentful = require('contentful')
 
 const SelectImage = ({
   setImageUrl,
   setImageStatus,
   imageUrl,
+  imageName,
+  sdk,
   setSelectedImage,
   selectedImage,
   setImageName,
+  imageAssets,
+  url,
+  setUrl,
+  setImageAssets,
 }: any) => {
-  //import
-  const contentful = require('contentful-management')
-  const assetContentful = require('contentful')
-
   //state Declaratios
   const [imageFile, setImageFile] = useState<any>()
-  const [imageAssets, setImageAssets] = useState<any>()
-
-  const [url, setUrl] = useState({
-    url: '',
-    contentful: true,
-  })
-
+  // const [imageAssets, setImageAssets] = useState<any>()
+  // const [url, setUrl] = useState({
+  //   url: '',
+  //   contentful: true,
+  // })
   const client = contentful.createClient({
     accessToken: 'CFPAT-XKF92MSjNN50kOIwzZbLjsYxwguJHTURek20n68Kl74',
   })
-
   const assetClient = assetContentful.createClient({
     space: 'ov64r3ga08sj',
     accessToken: 'eCA_T4CqDY8bM5jKqigY48DXMDKUOG9jXvlov0nxbUQ',
   })
 
   //functions
-  const getAssets = async () => {
-    const asset = await client
-      .getSpace('ov64r3ga08sj')
-      .then((space: any) => space.getEnvironment('master'))
-      .then((environment: any) => environment.getAssets())
-      .then((response: any) => setImageAssets(response.items))
-      .catch(console.error)
-  }
+  // const getAssets = async () => {
+  //   await client
+  //     .getSpace('ov64r3ga08sj')
+  //     .then((space: any) => space.getEnvironment('master'))
+  //     .then((environment: any) => environment.getAssets())
+  //     .then((response: any) => setImageAssets(response.items))
+  //     .catch(console.error)
+  // }
 
-  //get contentful image url
   const getImageUrl = async (id: string, status: any) => {
     await assetClient.getAsset(id).then((asset: any) => {
       if (status) {
@@ -80,9 +79,11 @@ const SelectImage = ({
   const goToCreateUsi = async () => {
     let tempUrl = cloneDeep(url)
     if (tempUrl.contentful) {
+      sdk.entry.fields.title.setValue(imageName)
       setImageUrl(tempUrl.url)
       setImageStatus(true)
     } else {
+      sdk.entry.fields.title.setValue(url?.url?.name)
       let bufferFile = await convertBuffer(tempUrl.url)
       uploadImage(bufferFile, imageFile)
     }
@@ -120,9 +121,9 @@ const SelectImage = ({
       .catch(console.error)
   }
 
-  useEffect(() => {
-    getAssets()
-  }, [])
+  // useEffect(() => {
+  //   getAssets()
+  // }, [])
 
   return (
     <div
@@ -131,14 +132,6 @@ const SelectImage = ({
     >
       {imageAssets ? (
         <>
-          {/* <div
-            className="arrowContainer"
-            aria-disabled={imageFile ? false : true}
-            role="none"
-            onClick={() => goToCreateUsi()}
-          >
-            <ArrowForwardIcon size="large" />
-          </div> */}
           <div className="uploadSection">
             <MagicDropzone
               className="Dropzone"
@@ -147,14 +140,14 @@ const SelectImage = ({
             >
               <div className="Dropzone-content">
                 {imageFile ? (
-                  // eslint-disable-next-line jsx-a11y/alt-text
                   <img
                     src={imageFile?.preview}
                     height={'100%'}
                     width={'100%'}
+                    alt="Preview_image"
                   />
                 ) : (
-                  <p>Drop some file</p>
+                  <p>Upload Image</p>
                 )}
               </div>
             </MagicDropzone>
@@ -180,10 +173,12 @@ const SelectImage = ({
               <Select
                 name="optionSelect"
                 id="optionSelect"
-                // defaultValue=""
                 value={selectedImage}
+                testId="AutoComplte"
+                isDisabled={imageFile}
                 onChange={(e) => {
                   setSelectedImage(e.target.value)
+                  console.log(e.target.value)
                   getImageUrl(e.target.value, true)
                 }}
               >
@@ -193,7 +188,11 @@ const SelectImage = ({
                 {(imageAssets || []).map((element: any) => {
                   // console.log(element, 'Element')
                   return (
-                    <Select.Option value={element?.sys?.id} key={Math.random()}>
+                    <Select.Option
+                      value={element?.sys?.id}
+                      testId="selectOption"
+                      key={Math.random()}
+                    >
                       {element?.fields?.title?.['en-US']}
                     </Select.Option>
                   )
