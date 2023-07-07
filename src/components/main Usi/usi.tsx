@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import SelectImage from '../select image/selectImage'
 import CreateUsi from '../create Usi/createUsi'
 import './usi.css'
+import { Stack } from '@contentful/f36-components'
+import { Spinner } from '@contentful/forma-36-react-components'
 const contentful = require('contentful-management')
 
-const Usi = ({ sdk }) => {
+const Usi = ({ sdk }: any) => {
   const [url, setUrl] = useState({
     url: '',
     contentful: true,
@@ -19,7 +21,8 @@ const Usi = ({ sdk }) => {
   })
 
   useEffect(() => {
-    if (sdk.entry.fields.imageUrl.getValue()) {
+
+    if (sdk?.entry?.fields?.imageUrl?.getValue()) {
       const url = sdk.entry.fields.imageUrl.getValue()
       setImageUrl(url)
       setImageName(sdk.entry.fields.title.getValue())
@@ -65,7 +68,9 @@ const Usi = ({ sdk }) => {
             setImageAssets={setImageAssets}
           />
         ) : (
-          ''
+          <Stack>
+            <Spinner customSize={50} />
+          </Stack>
         )
       ) : (
         <CreateUsi

@@ -651,7 +651,7 @@ describe('Select Page', () => {
         },
       },
     ]
-    let url = { url: '', contentful: '' }
+    let url = { url: '', contentfula: '' }
     render(
       <SelectImage
         sdk={() => {}}

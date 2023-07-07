@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import './createUsi.css'
 import 'react-image-crop/dist/ReactCrop.css'
 import CancelIcon from '@mui/icons-material/Cancel'
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import CropIcon from '@mui/icons-material/Crop'
 import cloneDeep from 'clone-deep'
 import { Button, Stack, Menu } from '@contentful/f36-components'
@@ -485,6 +484,7 @@ const CreateUsi = ({
                 <div> Box Top</div>
                 <input
                   type="number"
+                  min={1}
                   value={rect?.y.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'y')}
                 />
@@ -493,6 +493,7 @@ const CreateUsi = ({
                 <div> Box Left</div>
                 <input
                   type="number"
+                  min={1}
                   value={rect?.x.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'x')}
                 />
@@ -501,6 +502,7 @@ const CreateUsi = ({
                 <div> Box Height</div>
                 <input
                   type="number"
+                  min={1}
                   value={rect?.height.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'height')}
                 />
@@ -509,6 +511,7 @@ const CreateUsi = ({
                 <div>Box Width</div>
                 <input
                   type="number"
+                  min={1}
                   value={rect?.width.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'width')}
                 />
@@ -551,7 +554,7 @@ const CreateUsi = ({
                             background: `${element}`,
                           }}
                           onClick={() => {
-                            setRect({ ...rect, ['borderColor']: element })
+                            setRect({ ...rect, 'borderColor': element })
                             setShowColorPalate(false)
                           }}
                           role="none"
@@ -565,6 +568,8 @@ const CreateUsi = ({
                 <div>Hotspot Top</div>
                 <input
                   type="number"
+                  min={rect?.y}
+                  max={rect?.y + rect?.height}
                   value={rect?.hotspotY.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'hotspotY')}
                 />
@@ -573,6 +578,8 @@ const CreateUsi = ({
                 <div> Hotspot Left</div>
                 <input
                   type="number"
+                  min={Math.floor(rect?.x)}
+                  max={Math.floor(rect?.x + rect?.width)}
                   value={rect?.hotspotX.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'hotspotX')}
                 />
