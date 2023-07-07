@@ -115,6 +115,7 @@ const CreateUsi = ({
     }
   }, [])
 
+
   const handleMouseDown = (event: any) => {
     if (canDraw) {
       if (!nextDraw) return
@@ -218,12 +219,29 @@ const CreateUsi = ({
     isDrawing.current = false
   }
 
-  const changeRectDetail = (value: any, key) => {
+  const [changingHotspot , setchanging]=useState<any>()
+
+
+  useEffect(()=>{
+    console.log(changingHotspot)
+  },[changingHotspot])
+
+
+  const changeRectDetail = (value: any, key:any) => {
+
+    // if(key === "hotspotY" || key === "hotspotX"){
+    //   setchanging(true);
+    // }
     if (key != 'borderColor' && key != 'name') {
       value = parseFloat(value)
     }
     let tempRect = JSON.parse(JSON.stringify(rect))
     tempRect[key] = value
+    if(["x", "y", "width", "height"].includes(key)) {
+
+      tempRect["hotspotY"] = tempRect.y + (tempRect.height/2)
+      tempRect["hotspotX"] =tempRect.x + (tempRect.width/2)
+    }
     setRect(tempRect)
   }
 
