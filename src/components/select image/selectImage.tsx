@@ -124,6 +124,9 @@ const SelectImage = ({
   // useEffect(() => {
   //   getAssets()
   // }, [])
+useEffect(()=>{
+  console.log(selectedImage,"selectedImage")
+},[selectedImage])
 
   return (
     <div
