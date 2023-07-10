@@ -23,6 +23,9 @@ const Usi = ({ sdk }: any) => {
   useEffect(() => {
 
     if (sdk?.entry?.fields?.imageUrl?.getValue()) {
+
+      console.log(sdk.entry.fields.imageUrl.getValue(),"url")
+      console.log(sdk.entry.fields.title.getValue(),"title")
       const url = sdk.entry.fields.imageUrl.getValue()
       setImageUrl(url)
       setImageName(sdk.entry.fields.title.getValue())

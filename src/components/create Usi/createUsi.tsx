@@ -6,14 +6,11 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import CropIcon from '@mui/icons-material/Crop'
 import cloneDeep from 'clone-deep'
 import { Button, Stack, Menu } from '@contentful/f36-components'
-import { element } from 'prop-types'
 import { Alert, Box, Snackbar, Tooltip } from '@mui/material'
 
 const CreateUsi = ({
   imageUrl,
   sdk,
-  setImageStatus,
-  selectedImage,
   imageName,
 }: any) => {
   const canvasRef = useRef<any>(null)
@@ -95,13 +92,11 @@ const CreateUsi = ({
       const scaledWidth = imageWidth * scale
       const scaledHeight = imageHeight * scale
 
-      const drawX = (containerWidth - scaledWidth) / 2
-      const drawY = (containerHeight - scaledHeight) / 2
-
       canvas.width = scaledWidth
       canvas.height = scaledHeight
       context.drawImage(image, 0, 0, scaledWidth, scaledHeight)
       setCanvas(canvas)
+
       if (sdk.entry.fields.hotspots.getValue()?.hotspots) {
         setRectArray(sdk.entry.fields.hotspots.getValue().hotspots)
         setListArray(sdk.entry.fields.hotspots.getValue().hotspots)
@@ -192,7 +187,6 @@ const CreateUsi = ({
   }
 
   const handleMouseUp = () => {
-    console.log(rect, 'Rect')
     const data = {
       x: (rect.x / canvasInfo.width) * 100,
       y: (rect.y / canvasInfo.height) * 100,
@@ -219,20 +213,8 @@ const CreateUsi = ({
     isDrawing.current = false
   }
 
-  const [changingHotspot , setchanging]=useState<any>()
-
-
-  useEffect(()=>{
-    console.log(changingHotspot)
-  },[changingHotspot])
-
-
   const changeRectDetail = (value: any, key:any) => {
-
-    // if(key === "hotspotY" || key === "hotspotX"){
-    //   setchanging(true);
-    // }
-    if (key != 'borderColor' && key != 'name') {
+    if (key !== 'borderColor' && key !== 'name') {
       value = parseFloat(value)
     }
     let tempRect = JSON.parse(JSON.stringify(rect))
@@ -266,7 +248,6 @@ const CreateUsi = ({
 
   const deleteBoundingBox = (index: any, e: any) => {
     e.stopPropagation()
-    // console.log(showDetail, 'sssshow')
     let tempArr = cloneDeep(rectArray)
     tempArr.splice(index, 1)
     setSelectedBoundingBoxIndex(null)
@@ -279,10 +260,7 @@ const CreateUsi = ({
   }
 
   const cancelBoundingBox = () => {
-    // console.log(rect, 'Rect')
-    // let tempArr = cloneDeep(rectArray)
-    // tempArr.shift()
-    // console.log(tempArr, 'temparry')
+
     setRectArray(listArray)
     setShowDetail(false)
     setNextDraw(true)
@@ -301,7 +279,6 @@ const CreateUsi = ({
       context.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height)
       if (rectArray.length > 0) {
         rectArray.forEach((element: any) => {
-          console.log(element, 'element')
           context.strokeStyle = element.borderColor
           context.lineWidth = 1.5
           context.strokeRect(
@@ -368,10 +345,6 @@ const CreateUsi = ({
   const handleClose = () => {
     setOpen(false)
   }
-
-  useEffect(() => {
-    console.log(canDraw, 'candraw')
-  }, [canDraw])
 
   return (
     <div className="createContainer">
@@ -503,6 +476,7 @@ const CreateUsi = ({
                 <input
                   type="number"
                   min={1}
+                  max={100-rect?.height}
                   value={rect?.y.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'y')}
                 />
@@ -512,6 +486,7 @@ const CreateUsi = ({
                 <input
                   type="number"
                   min={1}
+                  max={100-rect?.width}
                   value={rect?.x.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'x')}
                 />
@@ -521,6 +496,7 @@ const CreateUsi = ({
                 <input
                   type="number"
                   min={1}
+                  max={100 - rect?.y}
                   value={rect?.height.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'height')}
                 />
@@ -530,6 +506,7 @@ const CreateUsi = ({
                 <input
                   type="number"
                   min={1}
+                  max={100 - rect?.x}
                   value={rect?.width.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'width')}
                 />

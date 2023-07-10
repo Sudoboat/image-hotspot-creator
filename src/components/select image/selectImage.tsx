@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from 'react'
 import MagicDropzone from 'react-magic-dropzone'
 import './selectImage.css'
-import { Button, Stack, Select, Spinner } from '@contentful/f36-components'
+import { Button, Select } from '@contentful/f36-components'
 import cloneDeep from 'clone-deep'
+import { Stack } from '@mui/material'
+import { Spinner } from '@contentful/forma-36-react-components'
 const contentful = require('contentful-management')
 const assetContentful = require('contentful')
 
@@ -23,11 +25,7 @@ const SelectImage = ({
 }: any) => {
   //state Declaratios
   const [imageFile, setImageFile] = useState<any>()
-  // const [imageAssets, setImageAssets] = useState<any>()
-  // const [url, setUrl] = useState({
-  //   url: '',
-  //   contentful: true,
-  // })
+ 
   const client = contentful.createClient({
     accessToken: 'CFPAT-XKF92MSjNN50kOIwzZbLjsYxwguJHTURek20n68Kl74',
   })
@@ -35,16 +33,6 @@ const SelectImage = ({
     space: 'ov64r3ga08sj',
     accessToken: 'eCA_T4CqDY8bM5jKqigY48DXMDKUOG9jXvlov0nxbUQ',
   })
-
-  //functions
-  // const getAssets = async () => {
-  //   await client
-  //     .getSpace('ov64r3ga08sj')
-  //     .then((space: any) => space.getEnvironment('master'))
-  //     .then((environment: any) => environment.getAssets())
-  //     .then((response: any) => setImageAssets(response.items))
-  //     .catch(console.error)
-  // }
 
   const getImageUrl = async (id: string, status: any) => {
     await assetClient.getAsset(id).then((asset: any) => {
@@ -121,12 +109,9 @@ const SelectImage = ({
       .catch(console.error)
   }
 
-  // useEffect(() => {
-  //   getAssets()
-  // }, [])
-useEffect(()=>{
-  console.log(selectedImage,"selectedImage")
-},[selectedImage])
+// useEffect(()=>{
+//   console.log(selectedImage,"selectedImage")
+// },[selectedImage])
 
   return (
     <div
@@ -135,7 +120,7 @@ useEffect(()=>{
     >
       {imageAssets ? (
         <>
-          <div className="uploadSection">
+          {!selectedImage && <div className="uploadSection">
             <MagicDropzone
               className="Dropzone"
               accept="image/jpeg, image/png, .jpg, .jpeg, .png"
@@ -169,7 +154,7 @@ useEffect(()=>{
             ) : (
               ' '
             )}
-          </div>
+          </div>}
           <div className="selectSection">
             <div className="selectParentContainer">
               <div style={{ color: '#5b5a5a' }}>Existing Images :</div>
@@ -181,7 +166,6 @@ useEffect(()=>{
                 isDisabled={imageFile}
                 onChange={(e) => {
                   setSelectedImage(e.target.value)
-                  console.log(e.target.value)
                   getImageUrl(e.target.value, true)
                 }}
               >
@@ -189,7 +173,6 @@ useEffect(()=>{
                   select image...
                 </Select.Option>
                 {(imageAssets || []).map((element: any) => {
-                  // console.log(element, 'Element')
                   return (
                     <Select.Option
                       value={element?.sys?.id}
@@ -206,10 +189,17 @@ useEffect(()=>{
               style={{
                 width: '100%',
                 display: 'flex',
-                justifyContent: 'flex-end',
+                justifyContent: 'center',
               }}
             >
-              <Stack>
+              <div style={{display:"flex",gap:"10px"}}>
+              {selectedImage && <Button
+                  variant="negative"
+                  testId="ProceedButton"
+                  onClick={() => setSelectedImage('')}
+                >
+                  Clear
+                </Button>}
                 <Button
                   variant="primary"
                   testId="ProceedButton"
@@ -218,7 +208,7 @@ useEffect(()=>{
                 >
                   Proceed
                 </Button>
-              </Stack>
+              </div>
             </div>
           </div>
         </>
