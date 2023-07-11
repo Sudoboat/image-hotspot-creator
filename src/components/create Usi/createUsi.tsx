@@ -81,7 +81,7 @@ const CreateUsi = ({
     hotspotY: 0,
   })
   const [canvasInfo, setCanvas] = useState<HTMLCanvasElement>()
-  const [open, setOpen] = useState<boolean>(false)
+  // const [open, setOpen] = useState<boolean>(false)
 
   useEffect(() => {
     sdk.entry.fields.imageUrl.setValue(imageUrl)
@@ -335,13 +335,13 @@ const CreateUsi = ({
     }
   }, [selectedBoundingBoxIndex])
 
-  const handleClick = () => {
-    setOpen(true)
-  }
+  // const handleClick = () => {
+  //   setOpen(true)
+  // }
 
-  const handleClose = () => {
-    setOpen(false)
-  }
+  // const handleClose = () => {
+  //   setOpen(false)
+  // }
 
   return (
     <div className="createContainer">
@@ -411,7 +411,7 @@ const CreateUsi = ({
                   !canDraw ? { opacity: 1 } : { opacity: 0.5, cursor: 'auto' }
                 }
                 onClick={() => {
-                  handleClick()
+                  // handleClick()
                   setCanDraw(!canDraw)
                 }}
                 role="none"
@@ -424,7 +424,7 @@ const CreateUsi = ({
           </div>
         </div>
 
-        <Snackbar
+        {/* <Snackbar
           open={canDraw}
           autoHideDuration={1000}
           onClose={handleClose}
@@ -433,7 +433,7 @@ const CreateUsi = ({
           <Alert severity="info" sx={{ width: '70%' }}>
             Draw a Rectangle over the Image to Create Hotspots!
           </Alert>
-        </Snackbar>
+        </Snackbar> */}
         <div
           id="image_container"
           className="editable_image_container"
