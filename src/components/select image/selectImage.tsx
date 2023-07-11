@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/role-supports-aria-props */
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import MagicDropzone from 'react-magic-dropzone'
 import './selectImage.css'
 import { Button, Select } from '@contentful/f36-components'
@@ -12,7 +12,6 @@ const assetContentful = require('contentful')
 const SelectImage = ({
   setImageUrl,
   setImageStatus,
-  imageUrl,
   imageName,
   sdk,
   setSelectedImage,
@@ -23,9 +22,9 @@ const SelectImage = ({
   setUrl,
   setImageAssets,
 }: any) => {
+
   //state Declaratios
   const [imageFile, setImageFile] = useState<any>()
- 
   const client = contentful.createClient({
     accessToken: 'CFPAT-XKF92MSjNN50kOIwzZbLjsYxwguJHTURek20n68Kl74',
   })
@@ -34,6 +33,7 @@ const SelectImage = ({
     accessToken: 'eCA_T4CqDY8bM5jKqigY48DXMDKUOG9jXvlov0nxbUQ',
   })
 
+  //getting the url of the image
   const getImageUrl = async (id: string, status: any) => {
     await assetClient.getAsset(id).then((asset: any) => {
       if (status) {
@@ -46,11 +46,13 @@ const SelectImage = ({
     })
   }
 
+  //function for on dropping the image 
   const onDrop = (accepted: any) => {
     setImageFile(accepted[0])
     setUrl({ url: accepted[0], contentful: false })
   }
 
+  //converting image to buffer file for uploading in contentful 
   const convertBuffer = async (file: any) => {
     const data = await new Promise((resolve, reject) => {
       var reader = new FileReader()
@@ -60,10 +62,10 @@ const SelectImage = ({
       reader.onerror = reject
       reader.readAsArrayBuffer(file)
     })
-    console.log(data, 'data')
     return data
   }
 
+  //navigating to the create page by setting value to a state
   const goToCreateUsi = async () => {
     let tempUrl = cloneDeep(url)
     if (tempUrl.contentful) {
@@ -77,10 +79,10 @@ const SelectImage = ({
     }
   }
 
+  //Uploading a new image to contentful assets
   const uploadImage = async (bufferData: any, file: any) => {
     setImageAssets('')
-    const data = await client
-      .getSpace('ov64r3ga08sj')
+    await client.getSpace('ov64r3ga08sj')
       .then((space: any) => space.getEnvironment('master'))
       .then((environment: any) =>
         environment.createAssetFromFiles({
@@ -108,10 +110,6 @@ const SelectImage = ({
       })
       .catch(console.error)
   }
-
-// useEffect(()=>{
-//   console.log(selectedImage,"selectedImage")
-// },[selectedImage])
 
   return (
     <div

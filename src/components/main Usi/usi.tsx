@@ -11,11 +11,11 @@ const Usi = ({ sdk }: any) => {
     url: '',
     contentful: true,
   })
-  const [imageUrl, setImageUrl] = useState<any>()
-  const [imageStatus, setImageStatus] = useState(false)
-  const [selectedImage, setSelectedImage] = useState('')
-  const [imageName, setImageName] = useState<any>()
-  const [imageAssets, setImageAssets] = useState<any>()
+  const [imageUrl, setImageUrl] = useState<string>()
+  const [imageStatus, setImageStatus] = useState<boolean>(false)
+  const [selectedImage, setSelectedImage] = useState<string>('')
+  const [imageName, setImageName] = useState<string>()
+  const [imageAssets, setImageAssets] = useState<[]>()
   const client = contentful.createClient({
     accessToken: 'CFPAT-XKF92MSjNN50kOIwzZbLjsYxwguJHTURek20n68Kl74',
   })
@@ -23,19 +23,12 @@ const Usi = ({ sdk }: any) => {
   useEffect(() => {
 
     if (sdk?.entry?.fields?.imageUrl?.getValue()) {
-
-      console.log(sdk.entry.fields.imageUrl.getValue(),"url")
-      console.log(sdk.entry.fields.title.getValue(),"title")
       const url = sdk.entry.fields.imageUrl.getValue()
       setImageUrl(url)
       setImageName(sdk.entry.fields.title.getValue())
       setSelectedImage(sdk.entry.fields.title.getValue())
       setImageStatus(true)
     }
-  }, [])
-
-  useEffect(() => {
-    console.log(imageName, 'imagename')
   }, [])
 
   //functions

@@ -1,23 +1,35 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './createUsi.css'
 import 'react-image-crop/dist/ReactCrop.css'
 import CancelIcon from '@mui/icons-material/Cancel'
 import CropIcon from '@mui/icons-material/Crop'
 import cloneDeep from 'clone-deep'
 import { Button, Stack, Menu } from '@contentful/f36-components'
-import { Alert, Box, Snackbar, Tooltip } from '@mui/material'
+import { Alert, Snackbar, Tooltip } from '@mui/material'
 
 const CreateUsi = ({
   imageUrl,
   sdk,
   imageName,
 }: any) => {
-  const canvasRef = useRef<any>(null)
-  const containerRef = useRef<any>(null)
-  const imageRef = useRef<any>(null)
-  const [editing, setEditing] = useState<any>(false)
-  const [rect, setRect] = useState<any>({
+
+  interface Rectangle {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    name: string;
+    borderColor: string;
+    hotspotX: number;
+    hotspotY: number;
+  } 
+
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef< HTMLDivElement >(null)
+  const imageRef = useRef<HTMLImageElement>(null)
+  const [editing, setEditing] = useState<boolean>(false)
+  const [rect, setRect] = useState<Rectangle>({
     x: 0,
     y: 0,
     width: 0,
@@ -28,10 +40,10 @@ const CreateUsi = ({
     hotspotY: 0,
   })
   const isDrawing = useRef(false)
-  const [rectArray, setRectArray] = useState([])
-  const [showDetail, setShowDetail] = useState(false)
-  const [listArray, setListArray] = useState([])
-  const [colorPalateList, setColor] = useState([
+  const [rectArray, setRectArray] = useState<Rectangle[]>([])
+  const [showDetail, setShowDetail] = useState<boolean>(false)
+  const [listArray, setListArray] = useState<any>([])
+  const colorPalateList = [
     '#0058a3',
     '#ffdb00',
     '#cc0008',
@@ -53,12 +65,12 @@ const CreateUsi = ({
     '#808080',
     '#098a00',
     '#ffa424',
-  ])
-  const [nextDraw, setNextDraw] = useState(true)
-  const [canDraw, setCanDraw] = useState(false)
-  const [showColorPalate, setShowColorPalate] = useState(false)
+  ]
+  const [nextDraw, setNextDraw] = useState<boolean>(true)
+  const [canDraw, setCanDraw] = useState<boolean>(false)
+  const [showColorPalate, setShowColorPalate] = useState<boolean>(false)
   const [selectedBoundingBoxIndex, setSelectedBoundingBoxIndex] = useState(null)
-  const [draftRect, setDraftRect] = useState<any>({
+  const [draftRect, setDraftRect] = useState<Rectangle>({
     x: 0,
     y: 0,
     width: 0,
@@ -68,21 +80,21 @@ const CreateUsi = ({
     hotspotX: 0,
     hotspotY: 0,
   })
-  const [canvasInfo, setCanvas] = useState<any>()
-  const [open, setOpen] = React.useState(false)
+  const [canvasInfo, setCanvas] = useState<HTMLCanvasElement>()
+  const [open, setOpen] = useState<boolean>(false)
 
   useEffect(() => {
     sdk.entry.fields.imageUrl.setValue(imageUrl)
-    const container = containerRef.current
-    const canvas = canvasRef.current
-    const context = canvas.getContext('2d')
-    const image = imageRef.current
+    const container:HTMLDivElement|any = containerRef.current
+    const canvas:HTMLCanvasElement | any = canvasRef.current
+    const context = canvas?.getContext('2d')
+    const image:HTMLImageElement|any = imageRef.current
     image.onload = () => {
-      const containerWidth = container.offsetWidth
-      const containerHeight = container.offsetHeight
+      const containerWidth = container?.offsetWidth
+      const containerHeight = container?.offsetHeight
 
-      const imageWidth = image.width
-      const imageHeight = image.height
+      const imageWidth = image?.width
+      const imageHeight = image?.height
 
       const widthRatio = containerWidth / imageWidth
       const heightRatio = containerHeight / imageHeight
@@ -109,7 +121,6 @@ const CreateUsi = ({
       }
     }
   }, [])
-
 
   const handleMouseDown = (event: any) => {
     if (canDraw) {
@@ -174,7 +185,7 @@ const CreateUsi = ({
         (temporaryBoundingBox.hotspotY / canvasInfo.height) * 100
 
       let tempRectArr = cloneDeep(rectArray)
-      if (tempRectArr.length == 0) {
+      if (tempRectArr.length === 0) {
         tempRectArr.push(temporaryBoundingBox)
         setRectArray(tempRectArr)
       } else {
@@ -182,25 +193,14 @@ const CreateUsi = ({
         setRectArray(tempRectArr)
       }
       setRect(temporaryBoundingBox)
-      // drawRectangle()
     }
   }
 
   const handleMouseUp = () => {
-    const data = {
-      x: (rect.x / canvasInfo.width) * 100,
-      y: (rect.y / canvasInfo.height) * 100,
-      width: (rect.width / canvasInfo.width) * 100,
-      height: (rect.height / canvasInfo.height) * 100,
-      hotspotX: (rect.hotspotX / canvasInfo.width) * 100,
-      hotspotY: (rect.hotspotY / canvasInfo.height) * 100,
-      name: rect.name,
-      borderColor: rect.borderColor,
-    }
 
     if (!canDraw) return
     let tempRect = cloneDeep(rect)
-    if (tempRect.width == 0) {
+    if (tempRect.width === 0) {
       let BoundingArray = cloneDeep(rectArray)
       BoundingArray.shift()
       setRectArray(BoundingArray)
@@ -208,7 +208,6 @@ const CreateUsi = ({
       setShowDetail(true)
 
       setNextDraw(false)
-      // setRect()
     }
     isDrawing.current = false
   }
@@ -246,7 +245,7 @@ const CreateUsi = ({
     setEditing(false)
   }
 
-  const deleteBoundingBox = (index: any, e: any) => {
+  const deleteBoundingBox = (index: number, e: any) => {
     e.stopPropagation()
     let tempArr = cloneDeep(rectArray)
     tempArr.splice(index, 1)
@@ -267,8 +266,6 @@ const CreateUsi = ({
     setCanDraw(false)
     setEditing(false)
     setSelectedBoundingBoxIndex(null)
-    // sdk.entry.fields.imageUrl.setValue(imageUrl)
-    // sdk.entry.fields.hotspots.setValue({ hotspots: listArray })
   }
 
   useEffect(() => {
@@ -287,7 +284,7 @@ const CreateUsi = ({
             (element.width * canvasInfo.width) / 100,
             (element.height * canvasInfo.height) / 100
           )
-          if (element.width != 0 && element.height != 0) {
+          if (element.width !== 0 && element.height !== 0) {
             context.beginPath()
             context.arc(
               (element.hotspotX * canvas.width) / 100,
@@ -318,7 +315,7 @@ const CreateUsi = ({
   useEffect(() => {
     let tempArray: any = cloneDeep(rectArray)
     let index: any = cloneDeep(selectedBoundingBoxIndex)
-    if (index != null && index > -1) {
+    if (index !== null && index > -1) {
       tempArray[index] = rect
       setRectArray(tempArray)
     } else {
@@ -329,7 +326,7 @@ const CreateUsi = ({
   }, [rect])
 
   useEffect(() => {
-    if (selectedBoundingBoxIndex != null) {
+    if (selectedBoundingBoxIndex !== null) {
       let tempArr = cloneDeep(listArray)
       setRectArray(listArray)
       let selectedRect = tempArr[selectedBoundingBoxIndex]
