@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useRef, useState } from 'react'
-import './createUsi.css'
+import './createHotspot.css'
 import 'react-image-crop/dist/ReactCrop.css'
 import CancelIcon from '@mui/icons-material/Cancel'
 import CropIcon from '@mui/icons-material/Crop'
 import cloneDeep from 'clone-deep'
 import { Button, Stack, Menu } from '@contentful/f36-components'
-import { Alert, Snackbar, Tooltip } from '@mui/material'
+import { Tooltip } from '@mui/material'
 
 const CreateUsi = ({
   imageUrl,
@@ -24,7 +24,6 @@ const CreateUsi = ({
     hotspotX: number;
     hotspotY: number;
   } 
-
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef< HTMLDivElement >(null)
   const imageRef = useRef<HTMLImageElement>(null)
@@ -81,8 +80,8 @@ const CreateUsi = ({
     hotspotY: 0,
   })
   const [canvasInfo, setCanvas] = useState<HTMLCanvasElement>()
-  // const [open, setOpen] = useState<boolean>(false)
 
+  //Initial use effect for drawing the canvas and image in the image container
   useEffect(() => {
     sdk.entry.fields.imageUrl.setValue(imageUrl)
     const container:HTMLDivElement|any = containerRef.current
@@ -122,6 +121,7 @@ const CreateUsi = ({
     }
   }, [])
 
+  //This Function happens when the mouse is down on the image and initiates the creation of hotspots
   const handleMouseDown = (event: any) => {
     if (canDraw) {
       if (!nextDraw) return
@@ -151,6 +151,7 @@ const CreateUsi = ({
     }
   }
 
+  //This Function happens after the drawing of hotspots initiated and calculates the coordinates while the moving of mouse 
   const handleMouseMove = (event: any) => {
     if (canDraw) {
       if (!isDrawing.current) return
@@ -196,6 +197,7 @@ const CreateUsi = ({
     }
   }
 
+  //This Function is happens while the drawing is end
   const handleMouseUp = () => {
 
     if (!canDraw) return
@@ -212,6 +214,7 @@ const CreateUsi = ({
     isDrawing.current = false
   }
 
+  //This Function is used for the updating the existing hotspot and while creating hotspots
   const changeRectDetail = (value: any, key:any) => {
     if (key !== 'borderColor' && key !== 'name') {
       value = parseFloat(value)
@@ -226,6 +229,7 @@ const CreateUsi = ({
     setRect(tempRect)
   }
 
+  //Saving the bounding box after clicking the save button
   const saveBoundingBox = () => {
     setListArray(rectArray)
     setCanDraw(false)
@@ -245,6 +249,7 @@ const CreateUsi = ({
     setEditing(false)
   }
 
+  //Deleting the bounding box existing
   const deleteBoundingBox = (index: number, e: any) => {
     e.stopPropagation()
     let tempArr = cloneDeep(rectArray)
@@ -258,6 +263,7 @@ const CreateUsi = ({
     sdk.entry.fields.hotspots.setValue({ hotspots: tempArr })
   }
 
+//Cancels the editing an old or drawing a new hotspot 
   const cancelBoundingBox = () => {
 
     setRectArray(listArray)
@@ -268,6 +274,7 @@ const CreateUsi = ({
     setSelectedBoundingBoxIndex(null)
   }
 
+  //This useEffect is used to redraw the hotspots whenever it was changed
   useEffect(() => {
     if (canvasRef.current) {
       const canvas = canvasRef.current
@@ -312,6 +319,7 @@ const CreateUsi = ({
     }
   }, [rectArray])
 
+  //This useEffect happens for setting the coordinates while the mousemove happens
   useEffect(() => {
     let tempArray: any = cloneDeep(rectArray)
     let index: any = cloneDeep(selectedBoundingBoxIndex)
@@ -325,6 +333,7 @@ const CreateUsi = ({
     }
   }, [rect])
 
+  //This useeffect happens when a existing hotspot is selected and shows the values in right side
   useEffect(() => {
     if (selectedBoundingBoxIndex !== null) {
       let tempArr = cloneDeep(listArray)
@@ -335,13 +344,6 @@ const CreateUsi = ({
     }
   }, [selectedBoundingBoxIndex])
 
-  // const handleClick = () => {
-  //   setOpen(true)
-  // }
-
-  // const handleClose = () => {
-  //   setOpen(false)
-  // }
 
   return (
     <div className="createContainer">
@@ -411,7 +413,6 @@ const CreateUsi = ({
                   !canDraw ? { opacity: 1 } : { opacity: 0.5, cursor: 'auto' }
                 }
                 onClick={() => {
-                  // handleClick()
                   setCanDraw(!canDraw)
                 }}
                 role="none"
@@ -423,17 +424,6 @@ const CreateUsi = ({
             )}
           </div>
         </div>
-
-        {/* <Snackbar
-          open={canDraw}
-          autoHideDuration={1000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        >
-          <Alert severity="info" sx={{ width: '70%' }}>
-            Draw a Rectangle over the Image to Create Hotspots!
-          </Alert>
-        </Snackbar> */}
         <div
           id="image_container"
           className="editable_image_container"
@@ -581,7 +571,11 @@ const CreateUsi = ({
                   <Button
                     variant="positive"
                     size="small"
-                    isDisabled={rect?.name ? false : true}
+                    isDisabled={rect?.name && rect?.x
+                       && rect?.y && rect?.borderColor 
+                       && rect?.height && rect?.hotspotX 
+                       && rect?.hotspotY && 
+                       rect.width ? false : true}
                     onClick={() => saveBoundingBox()}
                   >
                     Save
@@ -595,7 +589,6 @@ const CreateUsi = ({
           </>
         ) : (
           <div className="userText">
-            {' '}
             Click the crop icon and draw a rectangle in image. <br /> or <br />{' '}
             Select an Existing hotspot.
           </div>

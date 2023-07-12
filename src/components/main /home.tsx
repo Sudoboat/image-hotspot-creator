@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import SelectImage from '../select image/selectImage'
-import CreateUsi from '../create Usi/createUsi'
-import './usi.css'
+import CreateUsi from '../create/createHotspot'
+import './home.css'
 import { Stack } from '@contentful/f36-components'
 import { Spinner } from '@contentful/forma-36-react-components'
 const contentful = require('contentful-management')
@@ -20,8 +20,9 @@ const Usi = ({ sdk }: any) => {
     accessToken: 'CFPAT-XKF92MSjNN50kOIwzZbLjsYxwguJHTURek20n68Kl74',
   })
 
-  useEffect(() => {
 
+  //This UseEffect is used for the first time if there is already values for that entry
+  useEffect(() => {
     if (sdk?.entry?.fields?.imageUrl?.getValue()) {
       const url = sdk.entry.fields.imageUrl.getValue()
       setImageUrl(url)
@@ -31,7 +32,7 @@ const Usi = ({ sdk }: any) => {
     }
   }, [])
 
-  //functions
+  //This function is used to get all the assets from the contentful assets
   const getAssets = async () => {
     await client
       .getSpace('ov64r3ga08sj')
@@ -41,6 +42,7 @@ const Usi = ({ sdk }: any) => {
       .catch(console.error)
   }
 
+  //This useEffect is used to call getAssets function for the first time after render
   useEffect(() => {
     getAssets()
   }, [])
