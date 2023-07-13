@@ -12,7 +12,7 @@ const Usi = ({ sdk }: any) => {
     url: '',
     contentful: true,
   })
-  const accesTokenManagement=process.env.SPACE_MANAGEMENT_TOKEN;
+  // const accesTokenManagement=process.env.SPACE_MANAGEMENT_TOKEN;
   const [imageUrl, setImageUrl] = useState<string>()
   const [imageStatus, setImageStatus] = useState<boolean>(false)
   const [selectedImage, setSelectedImage] = useState<string>('')
@@ -21,7 +21,6 @@ const Usi = ({ sdk }: any) => {
   const client = contentful.createClient({
     accessToken: space_token,
   })
-  console.log(accesTokenManagement,"token")
 
   //This UseEffect is used for the first time if there is already values for that entry
   useEffect(() => {

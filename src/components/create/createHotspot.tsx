@@ -321,6 +321,7 @@ const CreateUsi = ({
 
   //This useEffect happens for setting the coordinates while the mousemove happens
   useEffect(() => {
+    console.log("rect");
     let tempArray: any = cloneDeep(rectArray)
     let index: any = cloneDeep(selectedBoundingBoxIndex)
     if (index !== null && index > -1) {
@@ -465,6 +466,7 @@ const CreateUsi = ({
                   min={1}
                   max={100-rect?.height}
                   value={rect?.y.toFixed(2)}
+                  style={rect?.y<0||rect?.y>100-rect.height ? {border:"1px solid red"}:{border:"none"}}
                   onChange={(e) => changeRectDetail(e.target.value, 'y')}
                 />
               </div>
@@ -474,6 +476,7 @@ const CreateUsi = ({
                   type="number"
                   min={1}
                   max={100-rect?.width}
+                  style={rect?.x<0||rect?.x>100-rect.width ? {border:"1px solid red"}:{border:"none"}}
                   value={rect?.x.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'x')}
                 />
@@ -484,6 +487,7 @@ const CreateUsi = ({
                   type="number"
                   min={1}
                   max={100 - rect?.y}
+                  style={rect?.height<0||rect?.height>100-rect.y ? {border:"1px solid red"}:{border:"none"}}
                   value={rect?.height.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'height')}
                 />
@@ -494,6 +498,7 @@ const CreateUsi = ({
                   type="number"
                   min={1}
                   max={100 - rect?.x}
+                  style={rect?.width<0||rect?.width>100-rect.x ? {border:"1px solid red"}:{border:"none"}}
                   value={rect?.width.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'width')}
                 />
@@ -552,6 +557,7 @@ const CreateUsi = ({
                   type="number"
                   min={rect?.y.toFixed(2)}
                   max={(rect?.y + rect?.height).toFixed(2)}
+                  style={rect?.hotspotY<rect.y||rect?.hotspotY>rect?.y + rect?.height ? {border:"1px solid red"}:{border:"none"}}
                   value={rect?.hotspotY.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'hotspotY')}
                 />
@@ -562,6 +568,7 @@ const CreateUsi = ({
                   type="number"
                   min={rect?.x.toFixed(2)}
                   max={(rect?.x + rect?.width).toFixed(2)}
+                  style={rect?.hotspotX<rect.x||rect?.hotspotX>rect?.x + rect?.width ? {border:"1px solid red"}:{border:"none"}}
                   value={rect?.hotspotX.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'hotspotX')}
                 />
@@ -571,11 +578,21 @@ const CreateUsi = ({
                   <Button
                     variant="positive"
                     size="small"
-                    isDisabled={rect?.name && rect?.x
+                    isDisabled={(rect?.name && rect?.x
                        && rect?.y && rect?.borderColor 
                        && rect?.height && rect?.hotspotX 
-                       && rect?.hotspotY && 
-                       rect.width ? false : true}
+                       && rect?.hotspotY && rect.width ) 
+                       &&
+                       !( 
+                        (rect?.x<0||rect.x>100-rect.width) ||
+                      //   ||
+                         (rect?.y<0||rect.y>100-rect.height)  ||
+                        (rect.width<0 || rect.width>100-rect.x)  ||
+                        (rect.hotspotX<rect.x || rect.hotspotX>rect.x+rect.width)  
+                        ||
+                       (rect.hotspotY<rect.y || rect.hotspotY>(rect.y+rect.height)) 
+                       )
+                        ? false : true }
                     onClick={() => saveBoundingBox()}
                   >
                     Save
