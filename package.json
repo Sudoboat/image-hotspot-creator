@@ -17,6 +17,7 @@
     "contentful": "^10.3.3",
     "contentful-management": "10.38.4",
     "emotion": "10.0.27",
+    "path-browserify": "^1.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-image-crop": "^10.1.5",

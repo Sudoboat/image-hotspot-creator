@@ -4,6 +4,7 @@ import CreateUsi from '../create/createHotspot'
 import './home.css'
 import { Stack } from '@contentful/f36-components'
 import { Spinner } from '@contentful/forma-36-react-components'
+import {space_token} from "../../tokens.js";
 const contentful = require('contentful-management')
 
 const Usi = ({ sdk }: any) => {
@@ -11,15 +12,16 @@ const Usi = ({ sdk }: any) => {
     url: '',
     contentful: true,
   })
+  const accesTokenManagement=process.env.SPACE_MANAGEMENT_TOKEN;
   const [imageUrl, setImageUrl] = useState<string>()
   const [imageStatus, setImageStatus] = useState<boolean>(false)
   const [selectedImage, setSelectedImage] = useState<string>('')
   const [imageName, setImageName] = useState<string>()
   const [imageAssets, setImageAssets] = useState<[]>()
   const client = contentful.createClient({
-    accessToken: 'CFPAT-XKF92MSjNN50kOIwzZbLjsYxwguJHTURek20n68Kl74',
+    accessToken: space_token,
   })
-
+  console.log(accesTokenManagement,"token")
 
   //This UseEffect is used for the first time if there is already values for that entry
   useEffect(() => {

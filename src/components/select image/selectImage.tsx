@@ -6,8 +6,10 @@ import { Button, Select } from '@contentful/f36-components'
 import cloneDeep from 'clone-deep'
 import { Stack } from '@mui/material'
 import { Spinner } from '@contentful/forma-36-react-components'
+import {space_token, space_id, asset_token} from "../../tokens.js";
 const contentful = require('contentful-management')
 const assetContentful = require('contentful')
+
 
 const SelectImage = ({
   setImageUrl,
@@ -26,11 +28,11 @@ const SelectImage = ({
   //state Declaratios
   const [imageFile, setImageFile] = useState<any>()
   const client = contentful.createClient({
-    accessToken: 'CFPAT-XKF92MSjNN50kOIwzZbLjsYxwguJHTURek20n68Kl74',
+    accessToken: space_token,
   })
   const assetClient = assetContentful.createClient({
-    space: 'ov64r3ga08sj',
-    accessToken: 'eCA_T4CqDY8bM5jKqigY48DXMDKUOG9jXvlov0nxbUQ',
+    space: space_id,
+    accessToken: asset_token,
   })
 
   //getting the url of the image

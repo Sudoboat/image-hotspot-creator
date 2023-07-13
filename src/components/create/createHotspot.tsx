@@ -355,13 +355,6 @@ const CreateUsi = ({
               return (
                 <div className="hotspot_card" key={index}>
                   <div
-                    className="cancel_icon"
-                    onClick={(e) => deleteBoundingBox(index, e)}
-                    role="none"
-                  >
-                    <CancelIcon fontSize="small" />
-                  </div>
-                  <div
                     className="hotspot_title_container"
                     onClick={() => {
                       setSelectedBoundingBoxIndex(index)
@@ -386,6 +379,13 @@ const CreateUsi = ({
                     <div className="hotpot_title">
                       {rect?.name ? rect?.name : 'bounding box'}
                     </div>
+                    <div
+                    className="cancel_icon"
+                    onClick={(e) => deleteBoundingBox(index, e)}
+                    role="none"
+                  >
+                    <CancelIcon fontSize="small" />
+                  </div>
                   </div>
                 </div>
               )
@@ -550,8 +550,8 @@ const CreateUsi = ({
                 <div>Hotspot Top</div>
                 <input
                   type="number"
-                  min={rect?.y}
-                  max={rect?.y + rect?.height}
+                  min={rect?.y.toFixed(2)}
+                  max={(rect?.y + rect?.height).toFixed(2)}
                   value={rect?.hotspotY.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'hotspotY')}
                 />
@@ -560,8 +560,8 @@ const CreateUsi = ({
                 <div> Hotspot Left</div>
                 <input
                   type="number"
-                  min={Math.floor(rect?.x)}
-                  max={Math.floor(rect?.x + rect?.width)}
+                  min={rect?.x.toFixed(2)}
+                  max={(rect?.x + rect?.width).toFixed(2)}
                   value={rect?.hotspotX.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'hotspotX')}
                 />

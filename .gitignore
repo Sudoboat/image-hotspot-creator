@@ -17,6 +17,7 @@ yarn-error.log*
 node_modules/
 package-lock.json/
 build/
+tokens.js/
 
 # Coverage
 .coverage
