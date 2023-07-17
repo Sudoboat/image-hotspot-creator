@@ -1,81 +1,52 @@
-This project was bootstrapped with [Create Contentful App](https://github.com/contentful/create-contentful-app).
+# Image Hotspot Creator
 
-## How to use
+## Overview
 
-Execute create-contentful-app with npm, npx or yarn to bootstrap the example:
+The Image Hotspot Creator is a tool that allows you to highlight specific regions in an image called "hotspots". Hotspots can be created, edited, and deleted using the Hotspot Creator widget. Simply click and drag on the image to place a hotspot where you want it. This tool is particularly useful when you need to highlight and add interactivity to specific areas of an image.
 
-```bash
-# npx
-npx create-contentful-app --typescript
+## Requirements
 
-# npm
-npm init contentful-app -- --typescript
+To use this app, you will need:
 
-# Yarn
-yarn create contentful-app --typescript
-```
+- A content type with three fields:
+  - "Title": Field type - Short Text
+  - "Image URL": Field type - Short Text
+  - "hotspots": Field type - JSON Object
 
-## Available Scripts
+## How to use the app?
 
-In the project directory, you can run:
+1. Install the custom application.
+2. Go to the content type and add the custom application to the entry editor.
+3. In the content section, select the content type created earlier and click the "Add Entry" button.
+4. Open the Hotspot Creator in the Entry Editor.
+5. Upload a new picture or select an existing image from the contentful asset.
+6. Click "Proceed" to move to the creator page.
+7. To create hotspots:
+   - Click the crop icon.
+   - Drag-select the part of the image that needs to be highlighted.
+8. The coordinates of the hotspot will be displayed on the right side of the image.
+9. Click "Save" to save the hotspot or "Cancel" to remove it.
+10. The created hotspots will be displayed under the "Existing hotspot" section.
+11. To edit a hotspot, click on its title.
+12. Move to the Contentful editor, where the values will be updated in the corresponding fields.
 
-#### `npm start`
+The hotspot coordinates include:
+- x: Top position of the hotspot
+- y: Left position of the hotspot
+- height: Height of the hotspot
+- width: Width of the hotspot
+- name: Name of the hotspot
+- borderColor: Color of the hotspot border
+- hotspotX: Top position of the point inside the hotspot
+- hotspotY: Left position of the point inside the hotspot
 
-Creates or updates your app definition in Contentful, and runs the app in development mode.
-Open your app to view it in the browser.
+These coordinates are stored as an array called "hotspots" in the JSON object field.
 
-The page will reload if you make edits.
-You will also see any lint errors in the console.
+## Where can it be used?
 
-#### `npm run build`
+The Image Hotspot Creator is useful in scenarios where you need to highlight specific areas in an image and perform actions such as redirecting or opening a popup when clicking or hovering over those areas. Here are a few examples:
 
-Builds the app for production to the `build` folder.
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Highlighting people in a picture: Clicking on a person's hotspot can redirect to their Instagram profile or perform any desired action.
+- Interacting with objects in an image: Clicking on objects like tables, chairs, laptops, or mobile phones can trigger popups displaying detailed information or redirecting to specific product pages.
 
-The build is minified and the filenames include the hashes.
-Your app is ready to be deployed!
-
-#### `npm run upload`
-
-Uploads the build folder to contentful and creates a bundle that is automatically activated.
-The command guides you through the deployment process and asks for all required arguments.
-Read [here](https://www.contentful.com/developers/docs/extensibility/app-framework/create-contentful-app/#deploy-with-contentful) for more information about the deployment process.
-
-#### `npm run upload-ci`
-
-Similar to `npm run upload` it will upload your app to contentful and activate it. The only difference is  
-that with this command all required arguments are read from the environment variables, for example when you add
-the upload command to your CI pipeline.
-
-For this command to work, the following environment variables must be set:
-
-- `CONTENTFUL_ORG_ID` - The ID of your organization
-- `CONTENTFUL_APP_DEF_ID` - The ID of the app to which to add the bundle
-- `CONTENTFUL_ACCESS_TOKEN` - A personal [access token](https://www.contentful.com/developers/docs/references/content-management-api/#/reference/personal-access-tokens)
-
-## Libraries to use
-
-To make your app look and feel like Contentful use the following libraries:
-
-- [Forma 36](https://f36.contentful.com/) – Contentful's design system
-- [Contentful Field Editors](https://www.contentful.com/developers/docs/extensibility/field-editors/) – Contentful's field editor React components
-
-## Using the `contentful-management` SDK
-
-In the default create contentful app output, a contentful management client is
-passed into each location. This can be used to interact with Contentful's
-management API. For example
-
-```js
-// Use the client
-cma.locale.getMany({}).then((locales) => console.log(locales));
-```
-
-Visit the [`contentful-management` documentation](https://www.contentful.com/developers/docs/extensibility/app-framework/sdk/#using-the-contentful-management-library)
-to find out more.
-
-## Learn More
-
-[Read more](https://www.contentful.com/developers/docs/extensibility/app-framework/create-contentful-app/) and check out the video on how to use the CLI.
-
-Create Contentful App uses [Create React App](https://create-react-app.dev/). You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started) and how to further customize your app.
+This tool simplifies the process of adding interactivity and enhancing user experience in images by allowing you to define and manage hotspots with ease.
