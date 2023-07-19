@@ -2,11 +2,11 @@
 
 ## Overview
 
-The Image Hotspot Creator is a tool that allows you to highlight specific regions in an image called "hotspots". Hotspots can be created, edited, and deleted using the Hotspot Creator widget. Simply click and drag on the image to place a hotspot where you want it. This tool is particularly useful when you need to highlight and add interactivity to specific areas of an image.
+The Image Hotspot Creator is a tool that allows users to highlight specific regions in an image called "hotspots". Hotspots can be created, edited, and deleted using the Hotspot Creator widget. Simply click and drag on the image to place a hotspot where user want it. This tool is particularly useful when user need to highlight and add interactivity to specific areas of an image.
 
 ## Requirements
 
-To use this app, you will need:
+To use this app, user will need:
 
 - A content type with three fields:
   - "Title": Field type - Short Text
@@ -44,9 +44,9 @@ These coordinates are stored as an array called "hotspots" in the JSON object fi
 
 ## Where can it be used?
 
-The Image Hotspot Creator is useful in scenarios where you need to highlight specific areas in an image and perform actions such as redirecting or opening a popup when clicking or hovering over those areas. Here are a few examples:
+The Image Hotspot Creator is useful in scenarios where user need to highlight specific areas in an image and perform actions when clicking or hovering over those areas. Here are a few examples:
 
 - Highlighting people in a picture: Clicking on a person's hotspot can redirect to their Instagram profile or perform any desired action.
 - Interacting with objects in an image: Clicking on objects like tables, chairs, laptops, or mobile phones can trigger popups displaying detailed information or redirecting to specific product pages.
 
-This tool simplifies the process of adding interactivity and enhancing user experience in images by allowing you to define and manage hotspots with ease.
+This tool simplifies the process of adding interactivity and enhancing user experience in images by allowing user to define and manage hotspots with ease.

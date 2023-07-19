@@ -6,9 +6,7 @@ import { Button, Select } from '@contentful/f36-components'
 import cloneDeep from 'clone-deep'
 import { Stack } from '@mui/material'
 import { Spinner } from '@contentful/forma-36-react-components'
-import {space_token, space_id, asset_token} from "../../tokens.js";
 const contentful = require('contentful-management')
-const assetContentful = require('contentful')
 
 
 const SelectImage = ({
@@ -28,26 +26,24 @@ const SelectImage = ({
   //state Declaratios
   const [imageFile, setImageFile] = useState<any>()
   const client = contentful.createClient({
-    accessToken: space_token,
-  })
-  const assetClient = assetContentful.createClient({
-    space: space_id,
-    accessToken: asset_token,
+    accessToken: sdk.parameters.instance.accessToken,
   })
 
   //getting the url of the image
   const getImageUrl = async (id: string, status: any) => {
-    await assetClient.getAsset(id).then((asset: any) => {
+
+    await sdk.space.getAsset(id).then((asset: any) => {
       if (status) {
-        setUrl({ url: 'http:' + asset?.fields?.file?.url, contentful: true })
+        setUrl({ url: 'http:' + asset?.fields?.file["en-US"]?.url, contentful: true })
       } else {
-        setImageUrl('http:' + asset?.fields?.file?.url)
+        setImageUrl('http:' + asset?.fields?.file["en-US"]?.url)
         setImageStatus(true)
       }
-      setImageName(asset?.fields?.title)
+      setImageName(asset?.fields?.title["en-US"])
     })
   }
 
+// console.log(,"token")
   //function for on dropping the image 
   const onDrop = (accepted: any) => {
     setImageFile(accepted[0])
@@ -81,11 +77,14 @@ const SelectImage = ({
     }
   }
 
+  //
+
   //Uploading a new image to contentful assets
   const uploadImage = async (bufferData: any, file: any) => {
+    
     setImageAssets('')
-    await client.getSpace('ov64r3ga08sj')
-      .then((space: any) => space.getEnvironment('master'))
+    await client.getSpace(sdk.ids.space)
+      .then((space: any) => space.getEnvironment(sdk.ids.environment))
       .then((environment: any) =>
         environment.createAssetFromFiles({
           fields: {
@@ -113,6 +112,9 @@ const SelectImage = ({
       .catch(console.error)
   }
 
+ 
+
+  
   return (
     <div
       className="selectContainer"

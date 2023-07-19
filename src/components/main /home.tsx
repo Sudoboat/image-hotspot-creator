@@ -4,23 +4,28 @@ import CreateUsi from '../create/createHotspot'
 import './home.css'
 import { Stack } from '@contentful/f36-components'
 import { Spinner } from '@contentful/forma-36-react-components'
-import {space_token} from "../../tokens.js";
-const contentful = require('contentful-management')
+// import {space_token} from "../../tokens.js";
+// import { error } from 'console'
+// const contentful = require('contentful-management')
 
 const Usi = ({ sdk }: any) => {
   const [url, setUrl] = useState({
     url: '',
     contentful: true,
   })
+
+  // const client = contentful.createClient({
+  //   accessToken: space_token,
+  // })
+
+
   // const accesTokenManagement=process.env.SPACE_MANAGEMENT_TOKEN;
   const [imageUrl, setImageUrl] = useState<string>()
   const [imageStatus, setImageStatus] = useState<boolean>(false)
   const [selectedImage, setSelectedImage] = useState<string>('')
   const [imageName, setImageName] = useState<string>()
   const [imageAssets, setImageAssets] = useState<[]>()
-  const client = contentful.createClient({
-    accessToken: space_token,
-  })
+ 
 
   //This UseEffect is used for the first time if there is already values for that entry
   useEffect(() => {
@@ -35,11 +40,7 @@ const Usi = ({ sdk }: any) => {
 
   //This function is used to get all the assets from the contentful assets
   const getAssets = async () => {
-    await client
-      .getSpace('ov64r3ga08sj')
-      .then((space: any) => space.getEnvironment('master'))
-      .then((environment: any) => environment.getAssets())
-      .then((response: any) => setImageAssets(response.items))
+    await sdk.space.getAssets().then((response:any)=>{setImageAssets(response.items)})
       .catch(console.error)
   }
 

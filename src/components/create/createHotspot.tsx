@@ -278,7 +278,7 @@ const CreateUsi = ({
   useEffect(() => {
     if (canvasRef.current) {
       const canvas = canvasRef.current
-      const context = canvas.getContext('2d')
+      const context: any = canvas.getContext('2d')
       context.clearRect(0, 0, canvas.width, canvas.height)
       context.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height)
       if (rectArray.length > 0) {
@@ -321,7 +321,6 @@ const CreateUsi = ({
 
   //This useEffect happens for setting the coordinates while the mousemove happens
   useEffect(() => {
-    console.log("rect");
     let tempArray: any = cloneDeep(rectArray)
     let index: any = cloneDeep(selectedBoundingBoxIndex)
     if (index !== null && index > -1) {
