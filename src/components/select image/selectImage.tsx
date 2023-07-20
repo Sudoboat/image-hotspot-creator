@@ -6,7 +6,8 @@ import { Button, Select } from '@contentful/f36-components'
 import cloneDeep from 'clone-deep'
 import { Stack } from '@mui/material'
 import { Spinner } from '@contentful/forma-36-react-components'
-const contentful = require('contentful-management')
+import { createClient } from 'contentful-management'
+
 
 
 const SelectImage = ({
@@ -25,9 +26,6 @@ const SelectImage = ({
 
   //state Declaratios
   const [imageFile, setImageFile] = useState<any>()
-  const client = contentful.createClient({
-    accessToken: sdk.parameters.instance.accessToken,
-  })
 
   //getting the url of the image
   const getImageUrl = async (id: string, status: any) => {
@@ -77,14 +75,69 @@ const SelectImage = ({
     }
   }
 
-  //
+  // const newAsset = async (bufferData:any, file:any) => {
+    
+  //   console.log(bufferData,"data")
+    
+  // };
+
+  // async function createAssetWithContentfulSDK(blobFile:any) {
+  //   try {
+  //     // Convert the Blob into a base64 string using FileReader.
+  //     const base64String = await new Promise((resolve, reject) => {
+  //       const reader = new FileReader();
+  //       reader.readAsDataURL(blobFile);
+  //       reader.onloadend = () => resolve(reader.result.split(',')[1]);
+  //       reader.onerror = (error) => reject(error);
+  //     });
+  
+  //     // Make sure the Contentful SDK is properly initialized and authenticated.
+  //     // For example: const sdk = contentful.createClient({ ... });
+  
+  //     // Create the asset using the Contentful SDK.
+  //     const newAsset = await sdk.space.createAsset({
+  //       fields: {
+  //         title: {
+  //           'en-US': blobFile?.name,
+  //         },
+  //         description: {
+  //           'en-US': blobFile?.type,
+  //         },
+  //         file: {
+  //           'en-US': {
+  //             contentType: blobFile?.type,
+  //             fileName: blobFile?.name,
+  //             file: `data:${blobFile?.type};base64,${base64String}`,
+  //           },
+  //         },
+  //       },
+  //     });
+  
+  //     // Save the created asset.
+  //     const savedAsset = await newAsset.processForAllLocales().then((asset) => asset.publish());
+  
+  //     // If you want to use the asset ID or other properties, you can access them from 'savedAsset'.
+  //     console.log('Asset created and published successfully:', savedAsset);
+  
+  //     return savedAsset;
+  //   } catch (error) {
+  //     console.error('Error creating asset:', error);
+  //     throw error;
+  //   }
+  // }
 
   //Uploading a new image to contentful assets
+ 
   const uploadImage = async (bufferData: any, file: any) => {
+    // newAsset(bufferData,file);
+    const cma = createClient(
+      { apiAdapter: sdk.cmaAdapter },
+    )
+    
+    const space = await cma.getSpace(sdk.ids.space)
     
     setImageAssets('')
-    await client.getSpace(sdk.ids.space)
-      .then((space: any) => space.getEnvironment(sdk.ids.environment))
+    await space.getEnvironment(sdk.ids.environment)
       .then((environment: any) =>
         environment.createAssetFromFiles({
           fields: {
