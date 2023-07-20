@@ -200,6 +200,15 @@ const CreateUsi = ({
   //This Function is happens while the drawing is end
   const handleMouseUp = () => {
 
+    if(rect.width<0){
+      rect.width=Math.abs(rect.width)
+      rect.x=rect.x-rect.width
+    }
+    if(rect.height<0){
+      rect.height=Math.abs(rect.height)
+      rect.y=rect.y-rect.height
+    }
+
     if (!canDraw) return
     let tempRect = cloneDeep(rect)
     if (tempRect.width === 0) {
@@ -226,6 +235,7 @@ const CreateUsi = ({
       tempRect["hotspotY"] = tempRect.y + (tempRect.height/2)
       tempRect["hotspotX"] =tempRect.x + (tempRect.width/2)
     }
+
     setRect(tempRect)
   }
 

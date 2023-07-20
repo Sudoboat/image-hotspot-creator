@@ -41,7 +41,6 @@ const SelectImage = ({
     })
   }
 
-// console.log(,"token")
   //function for on dropping the image 
   const onDrop = (accepted: any) => {
     setImageFile(accepted[0])
@@ -75,61 +74,8 @@ const SelectImage = ({
     }
   }
 
-  // const newAsset = async (bufferData:any, file:any) => {
-    
-  //   console.log(bufferData,"data")
-    
-  // };
-
-  // async function createAssetWithContentfulSDK(blobFile:any) {
-  //   try {
-  //     // Convert the Blob into a base64 string using FileReader.
-  //     const base64String = await new Promise((resolve, reject) => {
-  //       const reader = new FileReader();
-  //       reader.readAsDataURL(blobFile);
-  //       reader.onloadend = () => resolve(reader.result.split(',')[1]);
-  //       reader.onerror = (error) => reject(error);
-  //     });
-  
-  //     // Make sure the Contentful SDK is properly initialized and authenticated.
-  //     // For example: const sdk = contentful.createClient({ ... });
-  
-  //     // Create the asset using the Contentful SDK.
-  //     const newAsset = await sdk.space.createAsset({
-  //       fields: {
-  //         title: {
-  //           'en-US': blobFile?.name,
-  //         },
-  //         description: {
-  //           'en-US': blobFile?.type,
-  //         },
-  //         file: {
-  //           'en-US': {
-  //             contentType: blobFile?.type,
-  //             fileName: blobFile?.name,
-  //             file: `data:${blobFile?.type};base64,${base64String}`,
-  //           },
-  //         },
-  //       },
-  //     });
-  
-  //     // Save the created asset.
-  //     const savedAsset = await newAsset.processForAllLocales().then((asset) => asset.publish());
-  
-  //     // If you want to use the asset ID or other properties, you can access them from 'savedAsset'.
-  //     console.log('Asset created and published successfully:', savedAsset);
-  
-  //     return savedAsset;
-  //   } catch (error) {
-  //     console.error('Error creating asset:', error);
-  //     throw error;
-  //   }
-  // }
-
   //Uploading a new image to contentful assets
- 
   const uploadImage = async (bufferData: any, file: any) => {
-    // newAsset(bufferData,file);
     const cma = createClient(
       { apiAdapter: sdk.cmaAdapter },
     )
@@ -164,9 +110,6 @@ const SelectImage = ({
       })
       .catch(console.error)
   }
-
- 
-
   
   return (
     <div
