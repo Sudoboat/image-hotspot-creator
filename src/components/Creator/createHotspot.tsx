@@ -8,7 +8,7 @@ import cloneDeep from 'clone-deep'
 import { Button, Stack, Menu } from '@contentful/f36-components'
 import { Tooltip } from '@mui/material'
 
-const CreateUsi = ({
+const CreateHotspot = ({
   imageUrl,
   sdk,
   imageName,
@@ -457,7 +457,7 @@ const CreateUsi = ({
         </div>
       </div>
       <div className="hotspot_details_container">
-        {showDetail ? (
+      {showDetail ? (
           <>
             <div className="boundingBoxDetailContainer">
               <div className="boundingBox">
@@ -623,4 +623,4 @@ const CreateUsi = ({
     </div>
   )
 }
-export default CreateUsi
+export default CreateHotspot

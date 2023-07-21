@@ -1,23 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import SelectImage from '../select image/selectImage'
-import CreateUsi from '../create/createHotspot'
+import SelectImage from '../Image Selector/selectImage'
+import CreateHotspot from '../Creator/createHotspot'
 import './home.css'
 import { Stack } from '@contentful/f36-components'
 import { Spinner } from '@contentful/forma-36-react-components'
-// import {space_token} from "../../tokens.js";
-// import { error } from 'console'
-// const contentful = require('contentful-management')
+
 
 const Usi = ({ sdk }: any) => {
   const [url, setUrl] = useState({
     url: '',
     contentful: true,
   })
-
-  // const client = contentful.createClient({
-  //   accessToken: space_token,
-  // })
-
 
   // const accesTokenManagement=process.env.SPACE_MANAGEMENT_TOKEN;
   const [imageUrl, setImageUrl] = useState<string>()
@@ -73,7 +66,7 @@ const Usi = ({ sdk }: any) => {
           </Stack>
         )
       ) : (
-        <CreateUsi
+        <CreateHotspot
           setImageUrl={setImageUrl}
           setImageStatus={setImageStatus}
           imageUrl={imageUrl}
