@@ -79,7 +79,7 @@ const CreateHotspot = ({
     hotspotX: 0,
     hotspotY: 0,
   })
-  const [canvasInfo, setCanvas] = useState<HTMLCanvasElement>()
+  const [canvasInfo, setCanvas] = useState<HTMLCanvasElement|undefined>()
 
   //Initial use effect for drawing the canvas and image in the image container
   useEffect(() => {
@@ -199,7 +199,6 @@ const CreateHotspot = ({
 
   //This Function is happens while the drawing is end
   const handleMouseUp = () => {
-
     if(rect.width<0){
       rect.width=Math.abs(rect.width)
       rect.x=rect.x-rect.width
@@ -354,6 +353,66 @@ const CreateHotspot = ({
     }
   }, [selectedBoundingBoxIndex])
 
+  const validateField=(data:any,name:string)=>{
+    if(name==="width"){
+      if(data?.width < 0 || data?.width > 100 - data.x)
+      {
+       return true;
+      }
+      return false;
+    } 
+    if(name==="height"){
+      if(data?.height < 0 || data?.height > 100 - data.y)
+      {
+       return true;
+      }
+      return false;
+    }
+    if(name==="top"){
+      if(data?.y < 0 || data?.y > 100 - data.height)
+      {
+       return true;
+      }
+      return false;
+    } 
+    if(name==="left"){
+      if(data?.x < 0 || data?.x > 100 - data.width)
+      {
+       return true;
+      }
+      return false;
+    } 
+    if(name==="hotspotY")
+    {
+      if(data.hotspotY < data.y || (data.hotspotY > data.y + data.height))
+     {
+      return true;
+     }
+     return false;
+    }
+    if(name==="hotspotX")
+    {
+      if(data.hotspotX < data.x || (data.hotspotX > data.x + data.width))
+     {
+      return true;
+     }
+     return false;
+    }
+    if(name==="Button"){
+     if(data.name.length>0){
+      if((data?.width < 0 || data?.width > 100 - data.x)
+      ||(data?.height < 0 || data?.height > 100 - data.y)
+      || (data?.y < 0 || data?.y > 100 - data.height) 
+      ||(data?.x < 0 || data?.x > 100 - data.width) 
+      || (data.hotspotY < data.y || (data.hotspotY > data.y + data.height))
+      || (data.hotspotX < data.x || (data.hotspotX > data.x + data.width))){
+        return false;
+      }
+     }
+      return true;
+    }
+    
+  }
 
   return (
     <div className="createContainer">
@@ -475,7 +534,7 @@ const CreateHotspot = ({
                   min={1}
                   max={100-rect?.height}
                   value={rect?.y.toFixed(2)}
-                  style={rect?.y<0||rect?.y>100-rect.height ? {border:"1px solid red"}:{border:"none"}}
+                  style={validateField(rect,"top") ? {border:"1px solid red"}:{border:"none"}}
                   onChange={(e) => changeRectDetail(e.target.value, 'y')}
                 />
               </div>
@@ -485,7 +544,7 @@ const CreateHotspot = ({
                   type="number"
                   min={1}
                   max={100-rect?.width}
-                  style={rect?.x<0||rect?.x>100-rect.width ? {border:"1px solid red"}:{border:"none"}}
+                  style={validateField(rect,"left") ? {border:"1px solid red"}:{border:"none"}}
                   value={rect?.x.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'x')}
                 />
@@ -496,7 +555,7 @@ const CreateHotspot = ({
                   type="number"
                   min={1}
                   max={100 - rect?.y}
-                  style={rect?.height<0||rect?.height>100-rect.y ? {border:"1px solid red"}:{border:"none"}}
+                  style={validateField(rect,"height") ? {border:"1px solid red"}:{border:"none"}}
                   value={rect?.height.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'height')}
                 />
@@ -507,7 +566,7 @@ const CreateHotspot = ({
                   type="number"
                   min={1}
                   max={100 - rect?.x}
-                  style={rect?.width<0||rect?.width>100-rect.x ? {border:"1px solid red"}:{border:"none"}}
+                  style={validateField(rect,"width") ? {border:"1px solid red"}:{border:"none"}}
                   value={rect?.width.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'width')}
                 />
@@ -566,7 +625,7 @@ const CreateHotspot = ({
                   type="number"
                   min={rect?.y.toFixed(2)}
                   max={(rect?.y + rect?.height).toFixed(2)}
-                  style={rect?.hotspotY<rect.y||rect?.hotspotY>rect?.y + rect?.height ? {border:"1px solid red"}:{border:"none"}}
+                  style={validateField(rect,"hotspotY") ? {border:"1px solid red"}:{border:"none"}}
                   value={rect?.hotspotY.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'hotspotY')}
                 />
@@ -577,7 +636,7 @@ const CreateHotspot = ({
                   type="number"
                   min={rect?.x.toFixed(2)}
                   max={(rect?.x + rect?.width).toFixed(2)}
-                  style={rect?.hotspotX<rect.x||rect?.hotspotX>rect?.x + rect?.width ? {border:"1px solid red"}:{border:"none"}}
+                  style={validateField(rect,"hotspotX") ? {border:"1px solid red"}:{border:"none"}}
                   value={rect?.hotspotX.toFixed(2)}
                   onChange={(e) => changeRectDetail(e.target.value, 'hotspotX')}
                 />
@@ -587,21 +646,7 @@ const CreateHotspot = ({
                   <Button
                     variant="positive"
                     size="small"
-                    isDisabled={(rect?.name && rect?.x
-                       && rect?.y && rect?.borderColor 
-                       && rect?.height && rect?.hotspotX 
-                       && rect?.hotspotY && rect.width ) 
-                       &&
-                       !( 
-                        (rect?.x<0||rect.x>100-rect.width) ||
-                      //   ||
-                         (rect?.y<0||rect.y>100-rect.height)  ||
-                        (rect.width<0 || rect.width>100-rect.x)  ||
-                        (rect.hotspotX<rect.x || rect.hotspotX>rect.x+rect.width)  
-                        ||
-                       (rect.hotspotY<rect.y || rect.hotspotY>(rect.y+rect.height)) 
-                       )
-                        ? false : true }
+                    isDisabled={validateField(rect,"Button") ? false : true }
                     onClick={() => saveBoundingBox()}
                   >
                     Save
