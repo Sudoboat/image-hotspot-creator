@@ -5,8 +5,7 @@ import 'react-image-crop/dist/ReactCrop.css'
 import CancelIcon from '@mui/icons-material/Cancel'
 import CropIcon from '@mui/icons-material/Crop'
 import cloneDeep from 'clone-deep'
-import { Button, Stack, Menu } from '@contentful/f36-components'
-import { Tooltip } from '@mui/material'
+import { Button, Stack, Menu, Tooltip } from '@contentful/f36-components'
 
 const CreateHotspot = ({
   imageUrl,
@@ -252,6 +251,8 @@ const CreateHotspot = ({
       height: 0,
       name: 'Boundingbox',
       borderColor: `#ffffff`,
+      hotspotX:0,
+      hotspotY:0,
     })
     sdk.entry.fields.imageUrl.setValue(imageUrl)
     sdk.entry.fields.hotspots.setValue({ hotspots: rectArray })
@@ -424,6 +425,24 @@ const CreateHotspot = ({
     
   }
 
+  const returnMax = (data:Rectangle,name:string) =>{
+    if(name === "hotspotX"){
+      return Math.round(rect?.x + rect?.width-0.5) ;
+    }
+    if(name === "hotspotY"){
+      return Math.round(rect?.y + rect?.height-0.5) ;
+    }
+  }
+
+  const returnMin = (data:Rectangle,name:string)=>{
+    if(name === "hotspotX"){
+      return Math.round(rect?.x + 0.5) ;
+    }
+    if(name === "hotspotY"){
+      return Math.round(rect?.y + 0.5) ;
+    }
+  }
+
   return (
     <div className="createContainer">
       <div className="hotspotlist_container">
@@ -449,12 +468,18 @@ const CreateHotspot = ({
                         : {}
                     }
                   >
+                    <Tooltip
+                          placement="top"
+                          content={`Colour : ${ rect.borderColor}`}
+                        >
                     <div
                       className="hotspot_image_logo"
                       style={{
                         background: rect.borderColor,
                       }}
                     ></div>
+                    </Tooltip>
+                    
                     <div className="hotpot_title">
                       {rect?.name ? rect?.name : 'bounding box'}
                     </div>
@@ -462,8 +487,9 @@ const CreateHotspot = ({
                     className="cancel_icon"
                     onClick={(e) => deleteBoundingBox(index, e)}
                     role="none"
-                  >
+                  ><Tooltip content="Remove Boundig Box" placement="top">
                     <CancelIcon fontSize="small" />
+                    </Tooltip>
                   </div>
                   </div>
                 </div>
@@ -496,7 +522,7 @@ const CreateHotspot = ({
                 }}
                 role="none"
               >
-                <Tooltip title="Select Area" placement="left">
+                <Tooltip content="Select Area" placement="left">
                   <CropIcon color="primary" />
                 </Tooltip>
               </div>
@@ -543,7 +569,7 @@ const CreateHotspot = ({
                   type="number"
                   min={1}
                   max={100-rect?.height}
-                  value={rect?.y.toFixed(2)}
+                  value={Math.round(rect?.y)}
                   style={validateField(rect,"top") ? {border:"1px solid red"}:{border:"none"}}
                   onChange={(e) => changeRectDetail(e.target.value, 'y')}
                 />
@@ -555,7 +581,7 @@ const CreateHotspot = ({
                   min={1}
                   max={100-rect?.width}
                   style={validateField(rect,"left") ? {border:"1px solid red"}:{border:"none"}}
-                  value={rect?.x.toFixed(2)}
+                  value={Math.round(rect?.x)}
                   onChange={(e) => changeRectDetail(e.target.value, 'x')}
                 />
               </div>
@@ -566,7 +592,7 @@ const CreateHotspot = ({
                   min={1}
                   max={100 - rect?.y}
                   style={validateField(rect,"height") ? {border:"1px solid red"}:{border:"none"}}
-                  value={rect?.height.toFixed(2)}
+                  value={Math.round(rect?.height)}
                   onChange={(e) => changeRectDetail(e.target.value, 'height')}
                 />
               </div>
@@ -577,7 +603,7 @@ const CreateHotspot = ({
                   min={1}
                   max={100 - rect?.x}
                   style={validateField(rect,"width") ? {border:"1px solid red"}:{border:"none"}}
-                  value={rect?.width.toFixed(2)}
+                  value={Math.round(rect?.width)}
                   onChange={(e) => changeRectDetail(e.target.value, 'width')}
                 />
               </div>
@@ -633,10 +659,10 @@ const CreateHotspot = ({
                 <div>Hotspot Top</div>
                 <input
                   type="number"
-                  min={rect?.y.toFixed(2)}
-                  max={(rect?.y + rect?.height).toFixed(2)}
+                  min={returnMin(rect,"hotspotY")}
+                  max={returnMax(rect,"hotspotY")}
                   style={validateField(rect,"hotspotY") ? {border:"1px solid red"}:{border:"none"}}
-                  value={rect?.hotspotY.toFixed(2)}
+                  value={Math.round(rect?.hotspotY)}
                   onChange={(e) => changeRectDetail(e.target.value, 'hotspotY')}
                 />
               </div>
@@ -644,10 +670,10 @@ const CreateHotspot = ({
                 <div> Hotspot Left</div>
                 <input
                   type="number"
-                  min={rect?.x.toFixed(2)}
-                  max={(rect?.x + rect?.width).toFixed(2)}
+                  min={returnMin(rect,"hotspotX")}
+                  max={returnMax(rect,"hotspotX")}
                   style={validateField(rect,"hotspotX") ? {border:"1px solid red"}:{border:"none"}}
-                  value={rect?.hotspotX.toFixed(2)}
+                  value={Math.round(rect?.hotspotX)}
                   onChange={(e) => changeRectDetail(e.target.value, 'hotspotX')}
                 />
               </div>

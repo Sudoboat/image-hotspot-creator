@@ -90,11 +90,11 @@
 
 .hotspot_image_logo{
     display: flex;
-    border-radius: 5px;
+    /* border-radius: 5px; */
     height: 15px;
     width: 15px;
     background-color: burlywood;
-    border: 0.5px solid gray;
+    border: 0.5px solid rgb(78, 78, 78);
 }
 
 .hotpot_title{
