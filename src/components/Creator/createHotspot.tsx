@@ -276,6 +276,16 @@ const CreateHotspot = ({
   const cancelBoundingBox = () => {
 
     setRectArray(listArray)
+    setRect({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    name: 'Boundingbox',
+    borderColor: `#ffffff`,
+    hotspotX: 0,
+    hotspotY: 0,
+  })
     setShowDetail(false)
     setNextDraw(true)
     setCanDraw(false)
