@@ -77,8 +77,8 @@ body {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    height: 200px;
-    width: 200px;
+     height: 100%;
+    /* width: 200px; */
   }
   
   .Dropzone-page {

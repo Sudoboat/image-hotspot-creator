@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import SelectImage from '../Image Selector/selectImage'
 import CreateHotspot from '../Creator/createHotspot'
 import './home.css'
-import { Stack } from '@contentful/f36-components'
-import { Spinner } from '@contentful/forma-36-react-components'
+import { Spinner, Stack } from '@contentful/f36-components'
+// import { Spinner } from '@contentful/forma-36-react-components'
 
 
 const Usi = ({ sdk }: any) => {

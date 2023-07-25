@@ -5,7 +5,7 @@ import 'react-image-crop/dist/ReactCrop.css'
 import CancelIcon from '@mui/icons-material/Cancel'
 import CropIcon from '@mui/icons-material/Crop'
 import cloneDeep from 'clone-deep'
-import { Button, Stack, Menu, Tooltip } from '@contentful/f36-components'
+import { Button, Stack, Menu, Tooltip, Notification } from '@contentful/f36-components'
 
 const CreateHotspot = ({
   imageUrl,
@@ -262,15 +262,31 @@ const CreateHotspot = ({
   //Deleting the bounding box existing
   const deleteBoundingBox = (index: number, e: any) => {
     e.stopPropagation()
-    let tempArr = cloneDeep(rectArray)
-    tempArr.splice(index, 1)
-    setSelectedBoundingBoxIndex(null)
-    setShowDetail(false)
-    setEditing(false)
-    setRectArray(tempArr)
-    setListArray(tempArr)
-    sdk.entry.fields.imageUrl.setValue(imageUrl)
-    sdk.entry.fields.hotspots.setValue({ hotspots: tempArr })
+    if(showDetail){
+      e.stopPropagation()
+      Notification.error('You are creating or editing a hotspot', { title: 'Oops!' ,duration:2500})
+    }
+    else{
+      setRect({
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        name: 'Boundingbox',
+        borderColor: `#ffffff`,
+        hotspotX: 0,
+        hotspotY: 0,
+      })
+      let tempArr = cloneDeep(rectArray)
+      tempArr.splice(index, 1)
+      setSelectedBoundingBoxIndex(null)
+      setShowDetail(false)
+      setEditing(false)
+      setRectArray(tempArr)
+      setListArray(tempArr)
+      sdk.entry.fields.imageUrl.setValue(imageUrl)
+      sdk.entry.fields.hotspots.setValue({ hotspots: tempArr })
+    }
   }
 
 //Cancels the editing an old or drawing a new hotspot 
@@ -365,6 +381,12 @@ const CreateHotspot = ({
   }, [selectedBoundingBoxIndex])
 
   const validateField=(data:any,name:string)=>{
+    if(name==="name"){
+      if(data.name.length===0){
+        return true;
+      }
+      return false;
+    }
     if(name==="width"){
       if(data?.width < 0 || data?.width > 100 - data.x)
       {
@@ -410,17 +432,25 @@ const CreateHotspot = ({
      return false;
     }
     if(name==="Button"){
-     if(data.name.length>0){
+     if(data.name.length!==0){
       if((data?.width < 0 || data?.width > 100 - data.x)
       ||(data?.height < 0 || data?.height > 100 - data.y)
       || (data?.y < 0 || data?.y > 100 - data.height) 
       ||(data?.x < 0 || data?.x > 100 - data.width) 
       || (data.hotspotY < data.y || (data.hotspotY > data.y + data.height))
       || (data.hotspotX < data.x || (data.hotspotX > data.x + data.width))){
+        console.log("false")
         return false;
       }
-     }
       return true;
+     }
+     else if(data.name.length===0){
+      console.log(data.name.length,true)
+      return false;
+     }
+     else{
+      return true;
+     }
     }
     
   }
@@ -487,7 +517,7 @@ const CreateHotspot = ({
                     className="cancel_icon"
                     onClick={(e) => deleteBoundingBox(index, e)}
                     role="none"
-                  ><Tooltip content="Remove Boundig Box" placement="top">
+                  ><Tooltip content="Remove Hotspot" placement="top">
                     <CancelIcon fontSize="small" />
                     </Tooltip>
                   </div>
@@ -560,6 +590,7 @@ const CreateHotspot = ({
                 <input
                   type="text"
                   value={rect?.name}
+                  style={validateField(rect,"name") ? {border:"1px solid red"}:{border:"none"}}
                   onChange={(e) => changeRectDetail(e.target.value, 'name')}
                 />
               </div>
