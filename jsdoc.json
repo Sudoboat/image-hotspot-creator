@@ -1,0 +1,30 @@
+{
+  "source": {
+    "include": ["./src"],
+    "exclude": ["node_modules", "build", "dist"]
+  },
+  "plugins": ["plugins/markdown"],
+  "opts": {
+    "destination": "./docs",
+    "recurse": true
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false,
+    "default": {
+      "outputSourceFiles": true
+    }
+  },
+  "babel": {
+    "extensions": [".tsx"]
+  },
+  "typescript": {
+    "moduleRoot": "src",
+    "excludeNotExported": true,
+    "excludePrivate": true,
+    "mode": "modules",
+    "jsx": "react",
+    "reactNamespace": "JSX",
+    "strict": true
+  }
+}

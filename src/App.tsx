@@ -11,6 +11,9 @@ const ComponentLocationSettings = {
 const App = () => {
   const sdk = useSDK();
 
+  /**
+   * The Main Component
+   */
   const Component = useMemo(() => {
     for (const [location, component] of Object.entries(ComponentLocationSettings)) {
       if (sdk.location.is(location)) {

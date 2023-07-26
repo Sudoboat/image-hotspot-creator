@@ -262,31 +262,69 @@ const CreateHotspot = ({
   //Deleting the bounding box existing
   const deleteBoundingBox = (index: number, e: any) => {
     e.stopPropagation()
-    if(showDetail){
+    // if(showDetail){
+    //   e.stopPropagation()
+    //   Notification.error('You are creating or editing a hotspot', { title: 'Oops!' ,duration:2500})
+    // }
+    // else{
+    //   setRect({
+    //     x: 0,
+    //     y: 0,
+    //     width: 0,
+    //     height: 0,
+    //     name: 'Boundingbox',
+    //     borderColor: `#ffffff`,
+    //     hotspotX: 0,
+    //     hotspotY: 0,
+    //   })
+    //   let tempArr = cloneDeep(rectArray)
+    //   tempArr.splice(index, 1)
+    //   setSelectedBoundingBoxIndex(null)
+    //   setShowDetail(false)
+    //   setEditing(false)
+    //   setRectArray(tempArr)
+    //   setListArray(tempArr)
+    //   sdk.entry.fields.imageUrl.setValue(imageUrl)
+    //   sdk.entry.fields.hotspots.setValue({ hotspots: tempArr })
+    // }
+    if(index===selectedBoundingBoxIndex){
       e.stopPropagation()
-      Notification.error('You are creating or editing a hotspot', { title: 'Oops!' ,duration:2500})
+      Notification.error('You are editing this hotspot', { title: 'Oops!' ,duration:2500})
     }
     else{
-      setRect({
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        name: 'Boundingbox',
-        borderColor: `#ffffff`,
-        hotspotX: 0,
-        hotspotY: 0,
-      })
-      let tempArr = cloneDeep(rectArray)
-      tempArr.splice(index, 1)
-      setSelectedBoundingBoxIndex(null)
-      setShowDetail(false)
-      setEditing(false)
-      setRectArray(tempArr)
-      setListArray(tempArr)
-      sdk.entry.fields.imageUrl.setValue(imageUrl)
-      sdk.entry.fields.hotspots.setValue({ hotspots: tempArr })
+      if(showDetail && canDraw){
+        let tempArr = cloneDeep(rectArray)
+        tempArr.splice(index+1, 1)
+        let tempList=cloneDeep(listArray)
+        tempList.splice(index,1)
+        setRectArray(tempArr)
+        setListArray(tempList)
+        sdk.entry.fields.imageUrl.setValue(imageUrl)
+        sdk.entry.fields.hotspots.setValue({ hotspots: tempArr })
+      }
+      else{
+        setRect({
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          name: 'Boundingbox',
+          borderColor: `#ffffff`,
+          hotspotX: 0,
+          hotspotY: 0,
+        })
+        let tempArr = cloneDeep(rectArray)
+        tempArr.splice(index, 1)
+        setSelectedBoundingBoxIndex(null)
+        setShowDetail(false)
+        setEditing(false)
+        setRectArray(tempArr)
+        setListArray(tempArr)
+        sdk.entry.fields.imageUrl.setValue(imageUrl)
+        sdk.entry.fields.hotspots.setValue({ hotspots: tempArr })
+      }
     }
+
   }
 
 //Cancels the editing an old or drawing a new hotspot 
