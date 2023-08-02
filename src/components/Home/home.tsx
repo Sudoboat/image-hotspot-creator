@@ -5,7 +5,11 @@ import './home.css'
 import { Spinner, Stack } from '@contentful/f36-components'
 // import { Spinner } from '@contentful/forma-36-react-components'
 
-
+/**
+ * Main Component of this custom application
+ * @param {sdk} sdk of the current entry.
+ * @returns {HTMLDivElement} homePage where the selector page and creator page loads.
+ */
 const Usi = ({ sdk }: any) => {
   const [url, setUrl] = useState({
     url: '',
@@ -31,7 +35,10 @@ const Usi = ({ sdk }: any) => {
     }
   }, [])
 
-  //This function is used to get all the assets from the contentful assets
+  /**
+   * This function is used to get all the assets from the contentful assets
+   * @function getAssets
+   */
   const getAssets = async () => {
     await sdk.space.getAssets().then((response:any)=>{setImageAssets(response.items)})
       .catch(console.error)

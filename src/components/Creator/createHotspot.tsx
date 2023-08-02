@@ -7,6 +7,13 @@ import CropIcon from '@mui/icons-material/Crop'
 import cloneDeep from 'clone-deep'
 import { Button, Stack, Menu, Tooltip, Notification } from '@contentful/f36-components'
 
+/**
+ * CreateHotspot component.
+ * @param {string} imageUrl - The URL of the image.
+ * @param {Object} sdk - The sdk object of current entry.
+ * @param {string} imageName - The name of the image.
+ * @returns {HTMLDivElement}
+ */
 const CreateHotspot = ({
   imageUrl,
   sdk,
@@ -120,7 +127,11 @@ const CreateHotspot = ({
     }
   }, [])
 
-  //This Function happens when the mouse is down on the image and initiates the creation of hotspots
+  /**
+   * Handle Mouse Down Function happens when the mouse is down on the image and initiates the creation of hotspots.
+   * @function handleMouseDown
+   * @param {object} event - mouse event
+   */
   const handleMouseDown = (event: any) => {
     if (canDraw) {
       if (!nextDraw) return
@@ -150,7 +161,11 @@ const CreateHotspot = ({
     }
   }
 
-  //This Function happens after the drawing of hotspots initiated and calculates the coordinates while the moving of mouse 
+  /**
+   * This Function happens after the drawing of hotspots initiated and calculates the coordinates while the moving of mouse
+   * @function handleMouseMove
+   * @param {object} event - Mouse Event 
+   */
   const handleMouseMove = (event: any) => {
     if (canDraw) {
       if (!isDrawing.current) return
@@ -196,7 +211,10 @@ const CreateHotspot = ({
     }
   }
 
-  //This Function is happens while the drawing is end
+  /**
+   * This Function is happens while the drawing is end 
+   * @function handleMouseUp
+   */
   const handleMouseUp = () => {
     if(rect.width<0){
       rect.width=Math.abs(rect.width)
@@ -221,7 +239,12 @@ const CreateHotspot = ({
     isDrawing.current = false
   }
 
-  //This Function is used for the updating the existing hotspot and while creating hotspots
+  /**
+   * This Function is used for the updating the existing hotspot and while creating hotspots
+   * @function changeRectDetail
+   * @param {number } value - value of the co-ordinate
+   * @param {string} key - key of the co-ordinate
+   */
   const changeRectDetail = (value: any, key:any) => {
     if (key !== 'borderColor' && key !== 'name') {
       value = parseFloat(value)
@@ -237,7 +260,10 @@ const CreateHotspot = ({
     setRect(tempRect)
   }
 
-  //Saving the bounding box after clicking the save button
+  /**
+   * Saving the bounding box after clicking the save button
+   * @function saveBoundingBox
+   */
   const saveBoundingBox = () => {
     setListArray(rectArray)
     setCanDraw(false)
@@ -259,7 +285,12 @@ const CreateHotspot = ({
     setEditing(false)
   }
 
-  //Deleting the bounding box existing
+  /**
+   * Deleting the bounding box existing
+   * @function deleteBoundingBox
+   * @param {number} index - index of the bounding box
+   * @param {Event} e - clicking event
+   */
   const deleteBoundingBox = (index: number, e: any) => {
     e.stopPropagation()
     // if(showDetail){
@@ -327,7 +358,10 @@ const CreateHotspot = ({
 
   }
 
-//Cancels the editing an old or drawing a new hotspot 
+  /**
+   * Cancels the editing an old or drawing a new hotspot 
+   * @function cancelBoundingBox
+   */
   const cancelBoundingBox = () => {
 
     setRectArray(listArray)
@@ -348,76 +382,13 @@ const CreateHotspot = ({
     setSelectedBoundingBoxIndex(null)
   }
 
-  //This useEffect is used to redraw the hotspots whenever it was changed
-  useEffect(() => {
-    if (canvasRef.current) {
-      const canvas = canvasRef.current
-      const context: any = canvas.getContext('2d')
-      context.clearRect(0, 0, canvas.width, canvas.height)
-      context.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height)
-      if (rectArray.length > 0) {
-        rectArray.forEach((element: any) => {
-          context.strokeStyle = element.borderColor
-          context.lineWidth = 1.5
-          context.strokeRect(
-            (element.x * canvasInfo.width) / 100,
-            (element.y * canvasInfo.height) / 100,
-            (element.width * canvasInfo.width) / 100,
-            (element.height * canvasInfo.height) / 100
-          )
-          if (element.width !== 0 && element.height !== 0) {
-            context.beginPath()
-            context.arc(
-              (element.hotspotX * canvas.width) / 100,
-              (element.hotspotY * canvas.height) / 100,
-              10,
-              0,
-              2 * Math.PI
-            )
-            context.fillStyle = 'white'
-            context.fill()
-
-            context.beginPath()
-            context.arc(
-              (element.hotspotX * canvas.width) / 100,
-              (element.hotspotY * canvas.height) / 100,
-              8,
-              0,
-              2 * Math.PI
-            )
-            context.fillStyle = 'rgb(3,111,227)'
-            context.fill()
-          }
-        })
-      }
-    }
-  }, [rectArray])
-
-  //This useEffect happens for setting the coordinates while the mousemove happens
-  useEffect(() => {
-    let tempArray: any = cloneDeep(rectArray)
-    let index: any = cloneDeep(selectedBoundingBoxIndex)
-    if (index !== null && index > -1) {
-      tempArray[index] = rect
-      setRectArray(tempArray)
-    } else {
-      if (!rect.width) return
-      tempArray[0] = rect
-      setRectArray(tempArray)
-    }
-  }, [rect])
-
-  //This useeffect happens when a existing hotspot is selected and shows the values in right side
-  useEffect(() => {
-    if (selectedBoundingBoxIndex !== null) {
-      let tempArr = cloneDeep(listArray)
-      setRectArray(listArray)
-      let selectedRect = tempArr[selectedBoundingBoxIndex]
-      setRect(selectedRect)
-      setShowDetail(true)
-    }
-  }, [selectedBoundingBoxIndex])
-
+  /**
+   * Validating the all the fields while editing or creating hotspots
+   * @function validateField
+   * @param {object} data - details of the sected rectangle 
+   * @param {string} name - name of the input fields
+   * @returns {boolean} return field error is true or false
+   */
   const validateField=(data:any,name:string)=>{
     if(name==="name"){
       if(data.name.length===0){
@@ -493,6 +464,13 @@ const CreateHotspot = ({
     
   }
 
+  /**
+   * This function returns the maximum value of the fields
+   * @function returnMax
+   * @param {object} data - co-ordinates of rectangle
+   * @param {string} name - name of the field
+   * @returns {number}  max value for the field
+   */
   const returnMax = (data:Rectangle,name:string) =>{
     if(name === "hotspotX"){
       return Math.round(rect?.x + rect?.width-0.5) ;
@@ -502,6 +480,13 @@ const CreateHotspot = ({
     }
   }
 
+  /**
+   * This function returns the maximum value of the fields
+   * @function returnMin
+   * @param {object} data - co-ordinates of rectangle
+   * @param {string} name - name of the field
+   * @returns {number}  min value for the field
+   */
   const returnMin = (data:Rectangle,name:string)=>{
     if(name === "hotspotX"){
       return Math.round(rect?.x + 0.5) ;
@@ -510,6 +495,76 @@ const CreateHotspot = ({
       return Math.round(rect?.y + 0.5) ;
     }
   }
+
+  //This useEffect is used to redraw the hotspots whenever it was changed
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current
+      const context: any = canvas.getContext('2d')
+      context.clearRect(0, 0, canvas.width, canvas.height)
+      context.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height)
+      if (rectArray.length > 0) {
+        rectArray.forEach((element: any) => {
+          context.strokeStyle = element.borderColor
+          context.lineWidth = 1.5
+          context.strokeRect(
+            (element.x * canvasInfo.width) / 100,
+            (element.y * canvasInfo.height) / 100,
+            (element.width * canvasInfo.width) / 100,
+            (element.height * canvasInfo.height) / 100
+          )
+          if (element.width !== 0 && element.height !== 0) {
+            context.beginPath()
+            context.arc(
+              (element.hotspotX * canvas.width) / 100,
+              (element.hotspotY * canvas.height) / 100,
+              10,
+              0,
+              2 * Math.PI
+            )
+            context.fillStyle = 'white'
+            context.fill()
+
+            context.beginPath()
+            context.arc(
+              (element.hotspotX * canvas.width) / 100,
+              (element.hotspotY * canvas.height) / 100,
+              8,
+              0,
+              2 * Math.PI
+            )
+            context.fillStyle = 'rgb(3,111,227)'
+            context.fill()
+          }
+        })
+      }
+    }
+  }, [rectArray])
+
+  //This useEffect happens for setting the coordinates while the mousemove happens
+  useEffect(() => {
+    let tempArray: any = cloneDeep(rectArray)
+    let index: any = cloneDeep(selectedBoundingBoxIndex)
+    if (index !== null && index > -1) {
+      tempArray[index] = rect
+      setRectArray(tempArray)
+    } else {
+      if (!rect.width) return
+      tempArray[0] = rect
+      setRectArray(tempArray)
+    }
+  }, [rect])
+
+  //This useeffect happens when a existing hotspot is selected and shows the values in right side
+  useEffect(() => {
+    if (selectedBoundingBoxIndex !== null) {
+      let tempArr = cloneDeep(listArray)
+      setRectArray(listArray)
+      let selectedRect = tempArr[selectedBoundingBoxIndex]
+      setRect(selectedRect)
+      setShowDetail(true)
+    }
+  }, [selectedBoundingBoxIndex])
 
   return (
     <div className="createContainer">
@@ -624,7 +679,7 @@ const CreateHotspot = ({
           <>
             <div className="boundingBoxDetailContainer">
               <div className="boundingBox">
-                <div> Box Name</div>
+                <div>Name</div>
                 <input
                   type="text"
                   value={rect?.name}
@@ -633,7 +688,7 @@ const CreateHotspot = ({
                 />
               </div>
               <div className="boundingBox">
-                <div> Box Top</div>
+                <div> Y</div>
                 <input
                   type="number"
                   min={1}
@@ -644,7 +699,7 @@ const CreateHotspot = ({
                 />
               </div>
               <div className="boundingBox">
-                <div> Box Left</div>
+                <div>X</div>
                 <input
                   type="number"
                   min={1}
@@ -655,7 +710,7 @@ const CreateHotspot = ({
                 />
               </div>
               <div className="boundingBox">
-                <div> Box Height</div>
+                <div>Height</div>
                 <input
                   type="number"
                   min={1}
@@ -666,7 +721,7 @@ const CreateHotspot = ({
                 />
               </div>
               <div className="boundingBox">
-                <div>Box Width</div>
+                <div>Width</div>
                 <input
                   type="number"
                   min={1}
@@ -725,7 +780,7 @@ const CreateHotspot = ({
                 </Menu>
               </div>
               <div className="boundingBox">
-                <div>Hotspot Top</div>
+                <div>Midpoint Y</div>
                 <input
                   type="number"
                   min={returnMin(rect,"hotspotY")}
@@ -736,7 +791,7 @@ const CreateHotspot = ({
                 />
               </div>
               <div className="boundingBox">
-                <div> Hotspot Left</div>
+                <div> Midpoint X</div>
                 <input
                   type="number"
                   min={returnMin(rect,"hotspotX")}

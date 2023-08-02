@@ -8,8 +8,6 @@ import { Stack } from '@mui/material'
 import { Spinner } from '@contentful/forma-36-react-components'
 import { createClient } from 'contentful-management'
 
-
-
 const SelectImage = ({
   setImageUrl,
   setImageStatus,
@@ -27,7 +25,11 @@ const SelectImage = ({
   //state Declaratios
   const [imageFile, setImageFile] = useState<any>()
 
-  //getting the url of the image
+  /**This function is for getting he url of image
+   * @function getImageUrl 
+   * @param {string} id - unique id of the entry of the asset
+   * @param {boolean} status - url is present or not  
+   */
   const getImageUrl = async (id: string, status: any) => {
 
     await sdk.space.getAsset(id).then((asset: any) => {
@@ -41,13 +43,21 @@ const SelectImage = ({
     })
   }
 
-  //function for on dropping the image 
+  /**
+   * This function happens while dropping of the image 
+   * @function onDrop
+   * @param {Event} accepted - The Event of the dropped image
+   */
   const onDrop = (accepted: any) => {
     setImageFile(accepted[0])
     setUrl({ url: accepted[0], contentful: false })
   }
 
-  //converting image to buffer file for uploading in contentful 
+  /**
+   * Converting the file to buffer
+   * @param {Blob} file - blob file of the image
+   * @returns Bufferfile
+   */
   const convertBuffer = async (file: any) => {
     const data = await new Promise((resolve, reject) => {
       var reader = new FileReader()
@@ -60,7 +70,10 @@ const SelectImage = ({
     return data
   }
 
-  //navigating to the create page by setting value to a state
+  /**
+   * Navigating to the create page by setting value to a state
+   * @function goToCreateUsi
+   */
   const goToCreateUsi = async () => {
     let tempUrl = cloneDeep(url)
     if (tempUrl.contentful) {
@@ -74,7 +87,12 @@ const SelectImage = ({
     }
   }
 
-  //Uploading a new image to contentful assets
+  /**
+   * Uploading a new image to contentful assets
+   * @function uploadImage
+   * @param {ArrayBuffer} bufferData - the Bufferdata of the Image
+   * @param {Blob} file - The blob file of the Image
+   */
   const uploadImage = async (bufferData: any, file: any) => {
     const cma = createClient(
       { apiAdapter: sdk.cmaAdapter },

@@ -1,5 +1,5 @@
 {
-  "name": "custom-app-hotspot-creator",
+  "name": "image-hotspot-creator",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -14,7 +14,6 @@
     "@mui/material": "^5.13.7",
     "@mui/styled-engine-sc": "^5.12.0",
     "axios": "^1.4.0",
-    "better-docs": "^2.7.2",
     "clone-deep": "^4.0.1",
     "contentful": "^10.3.3",
     "contentful-management": "10.38.4",
@@ -61,6 +60,7 @@
     "@types/node": "18.16.19",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
+    "better-docs": "^2.7.2",
     "cross-env": "7.0.3",
     "dotenv": "^16.3.1",
     "esbuild": "^0.18.11",
