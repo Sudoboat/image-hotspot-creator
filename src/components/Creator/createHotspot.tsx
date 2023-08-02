@@ -780,7 +780,7 @@ const CreateHotspot = ({
                 </Menu>
               </div>
               <div className="boundingBox">
-                <div>Midpoint Y</div>
+                <div>Hotspot Y</div>
                 <input
                   type="number"
                   min={returnMin(rect,"hotspotY")}
@@ -791,7 +791,7 @@ const CreateHotspot = ({
                 />
               </div>
               <div className="boundingBox">
-                <div> Midpoint X</div>
+                <div> Hotspot X</div>
                 <input
                   type="number"
                   min={returnMin(rect,"hotspotX")}
