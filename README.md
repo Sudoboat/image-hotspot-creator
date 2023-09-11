@@ -2,18 +2,23 @@
 
 ## Overview
 
-The Image Hotspot Creator is a tool that allows users to highlight specific regions in an image called "hotspots". Hotspots can be created, edited, and deleted using the Hotspot Creator widget. Simply click and drag on the image to place a hotspot where user want it. This tool is particularly useful when user need to highlight and add interactivity to specific areas of an image.
+Hotspot : A hotspot is a region in a picture that has to be highlighted
+
+Multiple hotspots may be created in a picture by editors using the Hotspot Creator widget. Simply click and drag on the image to place a hotspot where users want it.
+It will be simpler to use this Hotspot maker if there is a picture and a section of the picture that has to be highlighted. The created hotspots can also be edited and deleted after creation.
 
 ## Requirements
 
 To use this app, user will need:
 
-- A content type with three fields:
+- A content type with three fields in it:
   - "Title": Field type - Short Text
   - "Image URL": Field type - Short Text
   - "hotspots": Field type - JSON Object
 
-## How to use the app?
+## How does the app work?
+
+ Once the installation of the custom application is completed, go to the content type and add the custom application to the entry editor.
 
 1. Install the custom application.
 2. Go to the content type and add the custom application to the entry editor.
@@ -42,11 +47,12 @@ The hotspot coordinates include:
 
 These coordinates are stored as an array called "hotspots" in the JSON object field.
 
-## Where can it be used?
+## Where it can be used?
 
 The Image Hotspot Creator is useful in scenarios where user need to highlight specific areas in an image and perform actions when clicking or hovering over those areas. Here are a few examples:
 
-- Highlighting people in a picture: Clicking on a person's hotspot can redirect to their Instagram profile or perform any desired action.
-- Interacting with objects in an image: Clicking on objects like tables, chairs, laptops, or mobile phones can trigger popups displaying detailed information or redirecting to specific product pages.
+- If a particular area in a picture has to be highlighted and an action like redirecting or opening a popup should be taken while clicking or hovering over the particular area, this Image hotspot creator will make it easier to reach the goal by modifying the json object.
+- If there is a picture that has a number of people in it, then it can be made as clicking on a person which redirect to his instagram profile by adding a new key and value for the profile url in the json object and using that url a developer can make it interactive.
+- If there is a picture that consists of a Table, a chair, a laptop, mobile, etc.There should be a seperate key and value that has the url for every product,with those keys and values developer can make it interactive, When clicking on each object, there should be a popup that does some action, like displaying detailed information of that particular product or redirecting to the shopping page for that particular product.
 
 This tool simplifies the process of adding interactivity and enhancing user experience in images by allowing user to define and manage hotspots with ease.
