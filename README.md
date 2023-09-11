@@ -47,7 +47,7 @@ The hotspot coordinates include:
 
 These coordinates are stored as an array called "hotspots" in the JSON object field.
 
-## Where it can be used?
+## Where can it be used?
 
 The Image Hotspot Creator is useful in scenarios where user need to highlight specific areas in an image and perform actions when clicking or hovering over those areas. Here are a few examples:
 
@@ -56,3 +56,9 @@ The Image Hotspot Creator is useful in scenarios where user need to highlight sp
 - If there is a picture that consists of a Table, a chair, a laptop, mobile, etc.There should be a seperate key and value that has the url for every product,with those keys and values developer can make it interactive, When clicking on each object, there should be a popup that does some action, like displaying detailed information of that particular product or redirecting to the shopping page for that particular product.
 
 This tool simplifies the process of adding interactivity and enhancing user experience in images by allowing user to define and manage hotspots with ease.
+
+## Demo 
+ https://www.sudoboat.com/contentful/ihc/ihc.html#demo
+
+## Code Documentation
+https://github.com/Sudoboat/image-hotspot-creator
