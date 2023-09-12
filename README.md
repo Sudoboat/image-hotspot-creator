@@ -1,59 +1,72 @@
-# Image Hotspot Creator
+**Image Hotspot Creator**
 
-## Overview
+**On this document**
 
-Hotspot : A hotspot is a region in a picture that has to be highlighted
+- Overview
+- Requirements
+- How does this app work?
+- Where it can be used?
 
-Multiple hotspots may be created in a picture by editors using the Hotspot Creator widget. Simply click and drag on the image to place a hotspot where users want it.
-It will be simpler to use this Hotspot maker if there is a picture and a section of the picture that has to be highlighted. The created hotspots can also be edited and deleted after creation.
+**Overview**
 
-## Requirements
+Hotspots Areas are interactive regions marked over an Image. Hotspot is an identifier marker within the hotspot area to help identify and draw attention to that specific point.
 
-To use this app, user will need:
+Image Hotspot Creator helps users setup hotspots areas, with customisable border colours, Hotspot link positions, customisable size, etc
 
-- A content type with three fields in it:
-  - "Title": Field type - Short Text
-  - "Image URL": Field type - Short Text
-  - "hotspots": Field type - JSON Object
+![App Screenshot](./Readme/Screenshot1.png)
 
-## How does the app work?
+**Requirements**
 
- Once the installation of the custom application is completed, go to the content type and add the custom application to the entry editor.
+To use this app,you will need:
+ A content type with three fields in it.
+- A field type of “Short Text”named “Title”.
+- A field type of “Short Text”named “Image URL”.
+- A field type of “JSON Object”named “hotspots”.
 
-1. Install the custom application.
-2. Go to the content type and add the custom application to the entry editor.
-3. In the content section, select the content type created earlier and click the "Add Entry" button.
-4. Open the Hotspot Creator in the Entry Editor.
-5. Upload a new picture or select an existing image from the contentful asset.
-6. Click "Proceed" to move to the creator page.
-7. To create hotspots:
-   - Click the crop icon.
-   - Drag-select the part of the image that needs to be highlighted.
-8. The coordinates of the hotspot will be displayed on the right side of the image.
-9. Click "Save" to save the hotspot or "Cancel" to remove it.
-10. The created hotspots will be displayed under the "Existing hotspot" section.
-11. To edit a hotspot, click on its title.
-12. Move to the Contentful editor, where the values will be updated in the corresponding fields.
+![](./Readme/Screenshot2.png)
 
-The hotspot coordinates include:
-- x: Top position of the hotspot
-- y: Left position of the hotspot
-- height: Height of the hotspot
-- width: Width of the hotspot
-- name: Name of the hotspot
-- borderColor: Color of the hotspot border
-- hotspotX: Top position of the point inside the hotspot
-- hotspotY: Left position of the point inside the hotspot
+**How does the app work?**
 
-These coordinates are stored as an array called "hotspots" in the JSON object field.
+- Once the installation of the custom application is completed, go to the content type and add the custom application to the entry editor.
 
-## Where can it be used?
+![](./Readme/Screenshot3.png)
 
-The Image Hotspot Creator is useful in scenarios where user need to highlight specific areas in an image and perform actions when clicking or hovering over those areas. Here are a few examples:
+- Add an entry to the respective content model
 
-- If a particular area in a picture has to be highlighted and an action like redirecting or opening a popup should be taken while clicking or hovering over the particular area, this Image hotspot creator will make it easier to reach the goal by modifying the json object.
-- If there is a picture that has a number of people in it, then it can be made as clicking on a person which redirect to his instagram profile by adding a new key and value for the profile url in the json object and using that url a developer can make it interactive.
-- If there is a picture that consists of a Table, a chair, a laptop, mobile, etc.There should be a seperate key and value that has the url for every product,with those keys and values developer can make it interactive, When clicking on each object, there should be a popup that does some action, like displaying detailed information of that particular product or redirecting to the shopping page for that particular product.
+![](./Readme/Screenshot4.png)
+
+- Click on the crop icon and drag on the image to create interactive image hotspots 
+- Details Regarding the created hotspot area are displayed on the right side of the sidebar 
+- Click save button to save the hotspot or Cancel to remove it
+
+![](./Readme/Screenshot5.png)
+
+- The left side bar displays the list of crated hotspots 
+- Once the creation is completed move to the Editor of Contentful, and the values are updated in the fields as user created.
+
+![](./Readme/Screenshot6.png)
+
+The coordinates are,
+
+- x - Top of the hotspot,
+- y - Left of the hotspot,
+- height - Height of the hotspot,
+- width - Width of the hotspot,
+- name - Name of the hotspot,
+- borderColor - Color of the hotspot border,
+- hotspotX - Top of the point inside the hotspot,
+- hotspotY - Left of the point inside the hotspot.
+
+These coordinates are stored as an array called hotspots in the json object field.
+
+**Where it can be used?**
+
+If a particular area in a picture has to be highlighted and an action like redirecting or opening a popup should be taken while clicking or hovering over the particular area, this Image hotspot creator will make it easier to reach the goal by modifying the json object.
+
+**Example:**
+
+1. If there is a picture that has a number of people in it, then it can be made as clicking on a person which redirect to his Instagram profile by adding a new key and value for the profile url in the json object and using that url a developer can make it interactive.
+2. If there is a picture that consists of a Table, a chair, a laptop, mobile, etc.There should be a seperate key and value that has the url for every product,with those keys and values developer can make it interactive, When clicking on each object, there should be a popup that does some action, like displaying detailed information of that particular product or redirecting to the shopping page for that particular product.
 
 This tool simplifies the process of adding interactivity and enhancing user experience in images by allowing user to define and manage hotspots with ease.
 
