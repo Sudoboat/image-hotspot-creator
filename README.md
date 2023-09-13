@@ -50,3 +50,29 @@ This tool simplifies the process of adding interactivity and enhancing user expe
 
 ## Code Documentation
 https://github.com/Sudoboat/image-hotspot-creator
+
+## Local Installation
+
+Clone the project
+
+```bash
+  git clone https://github.com/Sudoboat/image-hotspot-creator
+```
+
+Go to the project directory
+
+```bash
+  cd image-hotspot-creator
+```
+
+Install dependencies
+
+```bash
+  npm install -f
+```
+
+Start the server
+
+```bash
+  npm start
+```
