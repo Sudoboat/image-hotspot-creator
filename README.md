@@ -13,7 +13,7 @@ Hotspots Areas are interactive regions marked over an Image. Hotspot is an ident
 
 Image Hotspot Creator helps users setup hotspots areas, with customisable border colours, Hotspot link positions, customisable size, etc
 
-![App Screenshot](https://www.sudoboat.com/images/ihc-demo.png)
+![App Screenshot](https://www.sudoboat.com/_next/static/media/ihc-demo.6caba10a.png)
 
 **Requirements**
 
@@ -23,28 +23,28 @@ To use this app,you will need:
 - A field type of “Short Text”named “Image URL”.
 - A field type of “JSON Object”named “hotspots”.
 
-![](https://www.sudoboat.com/images/ihc-field-type.png)
+![](https://www.sudoboat.com/_next/static/media/ihc-field-type.75487808.png)
 
 **How does the app work?**
 
 - Once the installation of the custom application is completed, go to the content type and add the custom application to the entry editor.
 
-![](https://www.sudoboat.com/images/ihc-field-type.png)
+![](https://www.sudoboat.com/_next/static/media/ihc-field.1cf44ff0.png)
 
 - Add an entry to the respective content model
 
-![](https://www.sudoboat.com/images/ihc-inital.png)
+![](https://www.sudoboat.com/_next/static/media/ihc-inital.b16fd19e.png)
 
 - Click on the crop icon and drag on the image to create interactive image hotspots 
 - Details Regarding the created hotspot area are displayed on the right side of the sidebar 
 - Click save button to save the hotspot or Cancel to remove it
 
-![](https://www.sudoboat.com/images/ihc-demo.png)
+![](	https://www.sudoboat.com/_next/static/media/ihc-demo.6caba10a.png)
 
 - The left side bar displays the list of crated hotspots 
 - Once the creation is completed move to the Editor of Contentful, and the values are updated in the fields as user created.
 
-![](https://www.sudoboat.com/images/ihc-json.png)
+![](	https://www.sudoboat.com/_next/static/media/ihc-json.10385271.png)
 
 The coordinates are,
 
