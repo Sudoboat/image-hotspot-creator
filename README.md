@@ -70,9 +70,6 @@ If a particular area in a picture has to be highlighted and an action like redir
 
 This tool simplifies the process of adding interactivity and enhancing user experience in images by allowing user to define and manage hotspots with ease.
 
-## Demo 
- https://www.sudoboat.com/contentful/ihc/ihc.html#demo
-
 ## Code Documentation
 https://github.com/Sudoboat/image-hotspot-creator
 
