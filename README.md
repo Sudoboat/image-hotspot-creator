@@ -33,7 +33,7 @@ To use this app,you will need:
 
 - Add an entry to the respective content model
 
-![](https://www.sudoboat.com/_next/static/media/ihc-inital.b16fd19e.png)
+![](https://github.com/Sudoboat/image-hotspot-creator/blob/master/readme_assets/Screenshot4.png)
 
 - Click on the crop icon and drag on the image to create interactive image hotspots 
 - Details Regarding the created hotspot area are displayed on the right side of the sidebar 
