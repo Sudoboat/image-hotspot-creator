@@ -2,7 +2,7 @@
 import { useState } from "react";
 import MagicDropzone from "react-magic-dropzone";
 import "./selectImage.css";
-import { Button, Select } from "@contentful/f36-components";
+import { Button, Select, TextInput } from "@contentful/f36-components";
 import cloneDeep from "clone-deep";
 import { Stack } from "@mui/material";
 import { Spinner } from "@contentful/forma-36-react-components";
@@ -243,8 +243,8 @@ const SelectImage = ({
                       )}
                     </div>
                     <div>
-                      <span>Image URL : </span>
-                      <input
+                      <span style={{fontWeight:"bold",paddingRight:"10px"}}>Image URL  </span>
+                      <TextInput
                         type="url"
                         id="homepage"
                         autoComplete="off"
